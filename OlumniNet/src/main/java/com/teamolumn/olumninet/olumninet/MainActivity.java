@@ -1,8 +1,10 @@
-package com.example.olumninet;
+package com.teamolumn.olumninet.olumninet;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
+
+import com.example.olumninet.R;
 
 public class MainActivity extends Activity {
 
