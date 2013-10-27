@@ -17,7 +17,7 @@ public class DatabaseModel extends SQLiteOpenHelper {
     public static final String POST_DATE  = "date";
     public static final String POST_PARENT = "parent";
     public static final String POST_STATUS  = "status";
-
+    public static final String POST_ID  = "serverid";
 
     private static final String DATABASE_NAME = "OlumniNet";
     private static final int DATABASE_VERSION = 1;
@@ -33,7 +33,8 @@ public class DatabaseModel extends SQLiteOpenHelper {
             + POST_MESSAGE + " TEXT NOT NULL, "
             + POST_DATE + " TEXT NOT NULL, "
             + POST_PARENT + " TEXT NOT NULL, "
-            + POST_STATUS + " TEXT NOT NULL);";
+            + POST_STATUS + " TEXT NOT NULL, "
+            + POST_ID + " TEXT NOT NULL);";
 
     //Default Constructor
     public DatabaseModel(Context context){
