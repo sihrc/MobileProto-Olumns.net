@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 
 import com.example.olumninet.R;
-
+/**
+ * Created by chris on 10/27/13.
+ */
 public class MainActivity extends Activity {
 
     @Override

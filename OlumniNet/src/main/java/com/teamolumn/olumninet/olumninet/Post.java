@@ -5,6 +5,7 @@ package com.teamolumn.olumninet.olumninet;
  */
 public class Post {
     String poster, groups, subject, message, date, parent, status, id;
+    //Constructor
     public Post (String poster,String groups,String subject,String message,String date,String parent,String status){
         this.poster = poster;
         this.groups = groups;
@@ -15,6 +16,7 @@ public class Post {
         this.status = status;
     }
 
+    //Setting the ID retrieved from the server
     public void setId(String value){
         this.id = value;
     }
