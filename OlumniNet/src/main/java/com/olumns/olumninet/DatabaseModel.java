@@ -1,9 +1,10 @@
-package com.teamolumn.olumninet.olumninet;
+package com.olumns.olumninet;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
 /**
  * Created by chris on 10/27/13.
  */
@@ -17,7 +18,7 @@ public class DatabaseModel extends SQLiteOpenHelper {
     public static final String POST_DATE  = "date";
     public static final String POST_PARENT = "parent";
     public static final String POST_STATUS  = "status";
-    public static final String POST_ID  = "serverid";
+    public static final String POST_ID  = "serverId";
 
     private static final String DATABASE_NAME = "OlumniNet";
     private static final int DATABASE_VERSION = 1;

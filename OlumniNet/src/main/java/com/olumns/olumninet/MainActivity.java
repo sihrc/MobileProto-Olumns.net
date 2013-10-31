@@ -1,4 +1,4 @@
-package com.teamolumn.olumninet.olumninet;
+package com.olumns.olumninet;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 
-import com.example.olumninet.R;
 /**
  * Created by chris on 10/27/13.
  */
@@ -20,7 +19,7 @@ public class MainActivity extends Activity {
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        ListsFragment listsFragment = new ListsFragment();
+        GroupFragment listsFragment = new GroupFragment();
         EventsFragment eventsFragment = new EventsFragment();
         ProfileFragment profileFragment = new ProfileFragment();
 
@@ -38,6 +37,8 @@ public class MainActivity extends Activity {
         actionBar.addTab(profileTab);
 
         actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.android_dark_blue)));
+
+        //Synchronize with Server
     }
 
 

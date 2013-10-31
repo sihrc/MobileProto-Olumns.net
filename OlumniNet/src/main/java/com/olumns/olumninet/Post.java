@@ -1,4 +1,4 @@
-package com.teamolumn.olumninet.olumninet;
+package com.olumns.olumninet;
 
 /**
  * Created by chris on 10/27/13.

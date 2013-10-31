@@ -1,10 +1,9 @@
-package com.teamolumn.olumninet.olumninet;
+package com.olumns.olumninet;
 
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 
-import com.example.olumninet.R;
 
 /**
  * Created by zach on 10/30/13.

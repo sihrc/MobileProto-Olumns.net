@@ -1,4 +1,4 @@
-package com.teamolumn.olumninet.olumninet;
+package com.olumns.olumninet;
 
 import android.content.ContentValues;
 import android.content.Context;
