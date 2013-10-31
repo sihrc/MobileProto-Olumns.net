@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.teamolumn.olumninet.R;
+
 import java.util.ArrayList;
 
 /**
@@ -23,14 +25,13 @@ public class GroupFragment extends Fragment{
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.groups_fragment,null);
-        // Set up the ArrayAdapter for the feedList
+
+        // Set up the ArrayAdapter for the Group List
         GroupListAdapter groupListAdapter = new GroupListAdapter(this.getActivity(), new ArrayList<String>());
         ListView feedList = (ListView) v.findViewById(R.id.groupList);
         feedList.setAdapter(groupListAdapter);
 
-
         return v;
-
     }
 
 }
