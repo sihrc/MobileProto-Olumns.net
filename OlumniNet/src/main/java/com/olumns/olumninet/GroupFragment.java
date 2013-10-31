@@ -16,6 +16,8 @@ import java.util.ArrayList;
  * Created by zach on 10/30/13.
  */
 public class GroupFragment extends Fragment{
+    //Activity
+    MainActivity activity;
     //Communication Interface
     PassDataToGroup dataPasser;
     Data data;
@@ -32,6 +34,7 @@ public class GroupFragment extends Fragment{
     public void onAttach(Activity activity){
         super.onAttach(activity);
         dataPasser = (PassDataToGroup) activity;
+        this.activity = (MainActivity) activity;
     }
 
     //On Fragment Creation
@@ -58,7 +61,8 @@ public class GroupFragment extends Fragment{
 
     public void onResume(){
         super.onResume();
-        this.groupList = dataPasser.passDataToGroup(new Data, MainActivity.GROUPS).groupList;
+        this.groups = dataPasser.passDataToGroup(new Data(), MainActivity.GROUPS).groups;
+        groupListAdapter = new GroupListAdapter(this.activity.getApplicationContext(),this.groups);
     }
 
     //Interface for Communication with Parent
