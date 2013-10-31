@@ -31,7 +31,7 @@ import java.util.ArrayList;
  */
 public class MainActivity extends Activity {
     String fullName, username, password;
-    ArrayList<String> groups;
+    public ArrayList<String> groups;
 
     //Data Request IDs
     final static int FULLNAME = 0;
@@ -145,7 +145,10 @@ public class MainActivity extends Activity {
     }
 
     //Communicate with Group Fragment
-    public Data passDataToGroup (Data data, long reqID){
+    public Data passDataToGroup (Data data, int reqID){
+        switch (reqID)
+
+
         return data;
     }
 }
