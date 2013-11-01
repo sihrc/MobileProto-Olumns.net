@@ -36,6 +36,10 @@ public class DBHandler {
         database = model.getWritableDatabase();
     }
 
+    public void close(){
+        database.close();
+    }
+
     //Update a post
     public void updatePost(Post post){
         deletePostById(post.id);

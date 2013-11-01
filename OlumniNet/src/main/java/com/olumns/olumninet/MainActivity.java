@@ -25,18 +25,17 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Created by chris on 10/27/13.
  */
 public class MainActivity extends Activity {
-    String fullName, username, password;
-    public ArrayList<String> groups;
-
-    //Data Request IDs
-    final static int FULLNAME = 0;
-    final static int USERNAME = 0;
-    final static int GROUPS = 0;
+    public String fullName, username, password;
+    public ArrayList<String> groupNames;
+    public HashMap<String,ArrayList<String>> notification;
+    public DBHandler db = new DBHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,28 +45,34 @@ public class MainActivity extends Activity {
         final ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
+        //Group Fragment
         GroupFragment listsFragment = new GroupFragment();
         EventsFragment eventsFragment = new EventsFragment();
         ProfileFragment profileFragment = new ProfileFragment();
 
+        //Lists Fragment
         ActionBar.Tab listsTab = actionBar.newTab().setText(R.string.tab1);
         listsTab.setTabListener(new NavTabListener(listsFragment));
 
+        //Events Fragment
         ActionBar.Tab eventsTab = actionBar.newTab().setText(R.string.tab2);
         eventsTab.setTabListener(new NavTabListener(eventsFragment));
 
+        //Profile Fragment
         ActionBar.Tab profileTab = actionBar.newTab().setText(R.string.tab3);
         profileTab.setTabListener(new NavTabListener(profileFragment));
 
+        //Adding the different fragments
         actionBar.addTab(listsTab);
         actionBar.addTab(eventsTab);
         actionBar.addTab(profileTab);
 
+        //Action Bar
         actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.android_dark_blue)));
 
         //Synchronize with Server
-    }
 
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,15 +145,14 @@ public class MainActivity extends Activity {
     }
 
     //Get Groups
-    public void getGroups(){
-        this.groups = new ArrayList<String>();
+    public void getUserGroups(){
+        MainActivity.this.groupNames = (ArrayList<String>)Arrays.asList(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("fullName", "").split("#,"));
+        this.db.open();
+        for (String group : groupNames){notification.put(group,this.db.getPostIdByGroup(group));}
+        db.close();
     }
 
-    //Communicate with Group Fragment
-    public Data passDataToGroup (Data data, int reqID){
-        switch (reqID)
+    //Dialog Log in
 
-
-        return data;
-    }
+    //Synchronize List of Post Ids and Grab from Server and sync to Database
 }

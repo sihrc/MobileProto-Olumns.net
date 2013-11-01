@@ -18,11 +18,9 @@ import java.util.ArrayList;
 public class GroupFragment extends Fragment{
     //Activity
     MainActivity activity;
-    //Communication Interface
-    PassDataToGroup dataPasser;
-    Data data;
 
     //Data
+    ArrayList<String> groupNames;
     ArrayList<Group> groups;
 
     //Views
@@ -33,7 +31,6 @@ public class GroupFragment extends Fragment{
     //On Fragment Attachment to Parent Activity (only time that you have access to Activity)
     public void onAttach(Activity activity){
         super.onAttach(activity);
-        dataPasser = (PassDataToGroup) activity;
         this.activity = (MainActivity) activity;
     }
 
@@ -61,12 +58,15 @@ public class GroupFragment extends Fragment{
 
     public void onResume(){
         super.onResume();
-        this.groups = dataPasser.passDataToGroup(new Data(), MainActivity.GROUPS).groups;
-        groupListAdapter = new GroupListAdapter(this.activity.getApplicationContext(),this.groups);
+        activity.getUserGroups();
+        //activity.notification
     }
 
-    //Interface for Communication with Parent
-    public interface PassDataToGroup {
-        public Data passDataToGroup (Data data, int reqID);
-    }
+    //Subscribe to a group
+
+    //Populate Group List
+
+    //Get how many posts
+
+    //
 }
