@@ -61,8 +61,10 @@ public class GroupFragment extends Fragment{
     public void onResume(){
         super.onResume();
         db = new DBHandler(activity);
+        db.open();
         groupListAdapter = new GroupListAdapter(activity,getGroupsFromNames(activity.getGroupNames()));
         groupListAdapter.notifyDataSetChanged();
+
     }
 
     //Get Group Objects from name
@@ -85,7 +87,4 @@ public class GroupFragment extends Fragment{
         }
         this.db.close();
     }
-
-    //Subscribe to a group
-
 }

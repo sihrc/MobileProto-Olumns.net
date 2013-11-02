@@ -80,8 +80,6 @@ public class MainActivity extends Activity {
         onFirstRun();
 
         //Synchronize with Server
-
-
     }
 
     @Override
