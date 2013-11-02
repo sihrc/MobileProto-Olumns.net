@@ -24,6 +24,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -32,6 +34,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by chris on 10/27/13.
@@ -211,5 +214,131 @@ public class MainActivity extends Activity {
     public boolean groupsExist(){
         String groups = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("groupsInfo","");
         return !groups.equals("");
+    }
+
+    public void updateLocalDatabase(){
+        new AsyncTask<Void, Void, String>() {
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+
+
+            @Override
+            protected void onPreExecute() {
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+
+            protected String doInBackground(Void... voids) {
+                try {
+                    String website = "http://olumni-server.heroku.com/" + fullName + "/getMissingPosts";
+                    HttpPost createSessions = new HttpPost(website);
+
+                    ArrayList<String> groupArray = getGroupNames();
+
+                    String groupsString = makeStingFromArraylist(getGroupNames());
+                    String postIDString = makeStingFromArraylist(db.getAllPostIds());
+
+                    JSONObject json = new JSONObject();
+                    json.put("postIDs", postIDString);
+                    json.put("groups",groupsString);
+
+
+                    StringEntity se = new StringEntity(json.toString());
+                    Log.i("JSON ENTITY",se.toString());
+                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                    createSessions.setEntity(se);
+
+                    response = client.execute(createSessions);
+                }
+                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
+                String result = "";
+                try{
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder();
+
+                    String line;
+                    String nl = System.getProperty("line.separator");
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line + nl);
+                    }
+                    result = sb.toString();
+                    Log.i("RESULT PRINT FROM THING", result);
+                }catch (Exception e){e.printStackTrace();}
+
+                return result;
+            }
+
+            protected void onPostExecute(String result){
+                DBHandler db = new DBHandler(getApplicationContext());
+                db.open();
+
+                if (result != null && !result.isEmpty()) {
+                    if (!result.equals("")){
+                        JSONArray jArray = new JSONArray();
+                        // ArrayList tweets = new ArrayList();
+                        JSONObject jsonObj = null;
+                        try{
+                            jsonObj = new JSONObject(result);
+                        }catch (JSONException e){
+                            Log.i("jsonParse", "error converting string to json object");
+                        }
+                        try {
+                            jArray = jsonObj.getJSONArray("posts");
+                        } catch(JSONException e) {
+                            e.printStackTrace();
+                            Log.i("jsonParse", "error converting to json array");
+                        }
+                        for (int i=0; i < jArray.length(); i++)
+                            try {
+                                JSONObject postObject = jArray.getJSONObject(i);
+                                JSONArray viewerArray = postObject.getJSONArray("viewers");
+                                StringBuilder viewerString = new StringBuilder();
+                                for (int j=0; j < viewerArray.length(); j++) {
+                                    viewerString.append(viewerArray.getString(j));
+                                    if (viewerString.length() > 0 &&  j != viewerArray.length()-1) {
+                                        viewerString.append("#");
+                                    }
+
+                                }
+
+                                // Pulling items from the array
+                                String group = postObject.getString("group");
+                                String parent = postObject.getString("parent");
+                                String userName = postObject.getString("username");
+                                String date = postObject.getString("date");
+                                String lastDate = postObject.getString("lastDate");
+                                String message = postObject.getString("message");
+                                String resolved = postObject.getString("resolved");
+                                String reply = postObject.getString("reply");
+                                String subject = postObject.getString("subject");
+                                String id = postObject.getString("_id");
+                                String viewers = viewerString.toString();
+                                String poster, groups, subject, message, date, parent, status, id
+                                Post post = new Post(userName, subject, message, );
+                                db.addPost(post);
+
+                            } catch (JSONException e) {
+                                Log.i("jsonParse", "error in iterating");
+                            }
+                    }
+
+                } else {Log.i("jsonParse", "result is null");}
+            }
+        }.execute();finish();
+    }
+
+    public String makeStingFromArraylist(ArrayList<String> array) {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        for (String s : array) {
+            sb.append(s);
+            System.out.println(i);
+            System.out.println(array.size());
+            if (sb.length() > 0 && i != array.size()-1) {
+                sb.append("&");
+                i++;
+            }
+
+        }
+        return sb.toString();
     }
 }
