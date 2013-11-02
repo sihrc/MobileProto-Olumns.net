@@ -58,16 +58,15 @@ public class PostFragment extends Fragment {
 
         v.setTag(holder);
 
-        //Need to look at what post we are looking at.
-//        holder.subject.setText(parentPost.subject);
-//        holder.author.setText(parentPost.poster);
-//        holder.message.setText(parentPost.message);
+        holder.subject.setText(curPost.subject);
+        holder.author.setText(curPost.poster);
+        holder.message.setText(curPost.message);
 
         //Fake Data
         ArrayList<Post> fakePosts = new ArrayList<Post>();
 
         // Set up the ArrayAdapter for the Thread List
-        postListAdapter = new PostListAdapter(activity, new ArrayList<Post>());
+        postListAdapter = new PostListAdapter(activity, db.getPostsByParent(curPost.id));
         postList = (ListView) v.findViewById(R.id.post_children);
         postList.setAdapter(postListAdapter);
 
