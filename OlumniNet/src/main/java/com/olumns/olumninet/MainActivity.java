@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -40,7 +42,8 @@ import java.util.List;
  * Created by chris on 10/27/13.
  */
 public class MainActivity extends Activity {
-    public String fullName, username, password;
+    public String fullName, username, password, curGroup;
+    public Post curPost;
     public DBHandler db = new DBHandler(this);
 
     @Override
@@ -80,8 +83,6 @@ public class MainActivity extends Activity {
         onFirstRun();
 
         //Synchronize with Server
-
-
     }
 
     @Override
@@ -113,7 +114,9 @@ public class MainActivity extends Activity {
                 JSONObject auth = new JSONObject();
                 try{
                     auth.put("username", MainActivity.this.username);
+                    Log.i ("USERNAME", MainActivity.this.username);
                     auth.put("password", MainActivity.this.password);
+                    Log.i ("USERNAME", MainActivity.this.password);
                     StringEntity se = new StringEntity(auth.toString());
                     se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
                     get_auth.setEntity(se);
@@ -156,19 +159,27 @@ public class MainActivity extends Activity {
 
     //Get Group Names
     public ArrayList<String> getGroupNames () {
-        /*ArrayList<String>   (Arrays.asList(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("notifications", "NULL").split("#,")));*/
+        ArrayList<String> groups = new ArrayList<String>();
+        String[] setGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("notifications", "NULL").split("#,");
+        for (String setGroup : setGroups){
+            String[] parts = setGroup.split("$");
+            groups.add(parts[0]);
+        }
+        return groups;
     }
 
     //Do this on first run
     public void onFirstRun(){
-        if (!usernameExists()) userLogin();
+        if (!fullNameExists()) userLogin();
         if (!groupsExist()) addGroup();
     }
 
     //Get User Name
-    public boolean usernameExists(){
-        this.username = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("username","");
-        return !this.username.equals("");
+    public boolean fullNameExists(){
+        this.fullName = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("fullName","");
+        this.username = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("username","username");
+        Log.i ("FULLNAME RIGHT NOW IS", fullName);
+        return !this.fullName.equals("");
     }
 
     //Dialog Log in
@@ -182,6 +193,7 @@ public class MainActivity extends Activity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         EditText userInput = (EditText) view.findViewById(R.id.username);
                         EditText passInput = (EditText) view.findViewById(R.id.password);
+                        userInput.setText(MainActivity.this.username);
                         MainActivity.this.username = userInput.getText().toString();
                         MainActivity.this.password = passInput.getText().toString();
                         //Save to preference
@@ -208,6 +220,62 @@ public class MainActivity extends Activity {
 
     //Add Group
     public void addGroup(){
+        db.open();
+        //Preset Groups for now, should get from server
+        final ArrayList <String> databaseGroups = new ArrayList<String>(){};
+        databaseGroups.add("Helpme");
+        databaseGroups.add("CarpeDiem");
+        databaseGroups.add("Randomness");
+
+        //Single Course Input
+        final AutoCompleteTextView groupList = new AutoCompleteTextView(MainActivity.this);
+        groupList.setThreshold(0);
+        //groupList.setDropDownHeight(2);
+        groupList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                groupList.showDropDown();
+            }
+        });
+        groupList.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_dropdown_item_1line, databaseGroups));
+
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Add A Course")
+                .setMessage("Choose from the existing list, or create a new course")
+                .setView(groupList)
+                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        String newGroup = groupList.getText().toString();
+                        if (newGroup.length() < 1) {
+                            Toast.makeText(MainActivity.this, "Give the course a name!", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }
+
+                        //Add course to server, if it doesn't exist on the server
+                        if (!databaseGroups.contains(newGroup))
+                            addGroupToServer(newGroup);
+
+                        //Save to preference
+                        getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                                .edit()
+                                .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
+                                .commit();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Do nothing.
+            }
+        })
+           .show();
+    }
+
+    //Add a group to the server
+    public void addGroupToServer(String group){
+
+    }
+
+    //Get Groups from the server
+    public void pullGroupsFromServer(){
 
     }
 

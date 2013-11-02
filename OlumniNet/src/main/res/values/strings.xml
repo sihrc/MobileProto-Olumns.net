@@ -3,9 +3,12 @@
 
     <string name="app_name">OlumniNet</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+
     <string name="tab1">Groups</string>
     <string name="tab2">Events</string>
     <string name="tab3">Profiles</string>
 
+    <string name="signin_main">Your Network Credentials</string>
+    <string name="signin_user">Username</string>
+    <string name="signin_pass">Password</string>
 </resources>

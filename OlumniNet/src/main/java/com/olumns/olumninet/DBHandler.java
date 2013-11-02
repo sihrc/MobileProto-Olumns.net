@@ -79,10 +79,26 @@ public class DBHandler {
         this.database.insert(DatabaseModel.TABLE_NAME, null, values);
     }
 
-    //Getting Posts by Parent to populate group view and detail view
-    public ArrayList<Post> getPostsByParent(String parent){
+    //Getting Threads by Group
+    public ArrayList<Post> getThreadsByGroup(String group){
         return sweepCursor(
-        database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_PARENT + " like '%" + parent + "%'", null, null, DatabaseModel.POST_DATE, null));
+        database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_GROUP + " like '%" + group + "%'", null, null, DatabaseModel.POST_DATE, null));
+    }
+
+    //Getting Posts by Thread
+    public ArrayList<Post> getPostsByThread(String thread){
+        return sweepCursor(
+                database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_PARENT + " like '%" + thread + "%'", null, null, DatabaseModel.POST_DATE, null));
+    }
+
+    //Get Information on the Children from Parent Thread
+    public Post getThreadInfo(Post parent){
+        Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_DATE}, DatabaseModel.POST_PARENT + " like '%" + parent + "%'", null, null, DatabaseModel.POST_DATE, null);
+        parent.setNumChild(String.valueOf(cursor.getCount()));
+        cursor.moveToLast();
+        parent.setLastDate(cursor.getString(0));
+        cursor.close();
+        return parent;
     }
 
     //Getting All Post Ids by Group for merging purposes
