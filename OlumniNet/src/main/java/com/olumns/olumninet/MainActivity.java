@@ -380,8 +380,11 @@ public class MainActivity extends Activity {
                                 String subject = postObject.getString("subject");
                                 String id = postObject.getString("_id");
                                 String viewers = viewerString.toString();
-                                String poster, groups, subject, message, date, parent, status, id
-                                Post post = new Post(userName, subject, message, );
+
+
+                                Post post = new Post(userName, group, subject, message, date, parent, resolved);
+                                post.setId(id);
+                                post.setLastDate(lastDate);
                                 db.addPost(post);
 
                             } catch (JSONException e) {
