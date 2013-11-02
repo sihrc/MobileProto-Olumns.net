@@ -170,8 +170,8 @@ public class MainActivity extends Activity {
 
     //Do this on first run
     public void onFirstRun(){
-        if (!fullNameExists()) userLogin();
         if (!groupsExist()) addGroup();
+        if (!fullNameExists()) userLogin();
     }
 
     //Get User Name

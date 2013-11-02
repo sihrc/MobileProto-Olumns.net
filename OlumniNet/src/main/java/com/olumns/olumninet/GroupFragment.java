@@ -3,6 +3,7 @@ package com.olumns.olumninet;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,9 +63,9 @@ public class GroupFragment extends Fragment{
         super.onResume();
         db = new DBHandler(activity);
         db.open();
-        groupListAdapter = new GroupListAdapter(activity,getGroupsFromNames(activity.getGroupNames()));
+        Log.i("CurGroups",activity.getGroupNames().toString());
+        groupListAdapter = new GroupListAdapter(activity, getGroupsFromNames(activity.getGroupNames()));
         groupListAdapter.notifyDataSetChanged();
-
     }
 
     //Get Group Objects from name

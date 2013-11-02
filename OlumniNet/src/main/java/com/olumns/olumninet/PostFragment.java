@@ -66,7 +66,7 @@ public class PostFragment extends Fragment {
         ArrayList<Post> fakePosts = new ArrayList<Post>();
 
         // Set up the ArrayAdapter for the Thread List
-        postListAdapter = new PostListAdapter(activity, db.getPostsByParent(curPost.id));
+        postListAdapter = new PostListAdapter(activity, db.getPostsByThread(curPost.id));
         postList = (ListView) v.findViewById(R.id.post_children);
         postList.setAdapter(postListAdapter);
 
