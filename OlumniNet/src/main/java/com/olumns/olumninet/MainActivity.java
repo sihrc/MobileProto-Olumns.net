@@ -39,7 +39,8 @@ import java.util.HashMap;
  * Created by chris on 10/27/13.
  */
 public class MainActivity extends Activity {
-    public String fullName, username, password;
+    public String fullName, username, password, curGroup;
+    public Post curPost;
     public DBHandler db = new DBHandler(this);
 
     @Override

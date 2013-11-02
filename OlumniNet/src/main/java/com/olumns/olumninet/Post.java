@@ -6,7 +6,7 @@ package com.olumns.olumninet;
 public class Post {
     String poster, groups, subject, message, date, parent, status, id, numChild, lastDate;
     //Constructor
-    public Post (String poster,String groups,String subject,String message,String date,String parent,String status){
+    public Post (String poster,String groups,String subject,String message, String date, String parent, String status){
         this.poster = poster;
         this.groups = groups;
         this.subject = subject;

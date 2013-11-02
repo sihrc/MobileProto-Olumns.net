@@ -21,6 +21,7 @@ public class PostFragment extends Fragment {
     //Activity
     MainActivity activity;
     DBHandler db;
+    Post curPost;
 
     //Views
     PostListAdapter postListAdapter;
@@ -31,6 +32,7 @@ public class PostFragment extends Fragment {
     public void onAttach(Activity activity){
         super.onAttach(activity);
         this.activity = (MainActivity) activity;
+        this.curPost = this.activity.curPost;
     }
 
     //On Fragment Creation

@@ -20,6 +20,8 @@ public class ThreadFragment extends Fragment {
     MainActivity activity;
     DBHandler db;
 
+    String curGroup;
+
     //Views
     ThreadListAdapter threadListAdapter;
     ListView threadList;
@@ -29,6 +31,7 @@ public class ThreadFragment extends Fragment {
     public void onAttach(Activity activity){
         super.onAttach(activity);
         this.activity = (MainActivity) activity;
+        this.curGroup = this.activity.curGroup;
     }
 
     //On Fragment Creation
