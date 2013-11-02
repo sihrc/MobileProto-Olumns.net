@@ -2,11 +2,15 @@ package com.olumns.olumninet;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.teamolumn.olumninet.R;
@@ -34,8 +38,6 @@ import java.util.HashMap;
  */
 public class MainActivity extends Activity {
     public String fullName, username, password;
-    public ArrayList<String> groupNames;
-    public HashMap<String,ArrayList<String>> notification = new HashMap<String, ArrayList<String>>();
     public DBHandler db = new DBHandler(this);
 
     @Override
@@ -71,7 +73,11 @@ public class MainActivity extends Activity {
         //Action Bar
         actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.android_dark_blue)));
 
+        //OnFirstRun
+        onFirstRun();
+
         //Synchronize with Server
+
 
     }
 
@@ -145,20 +151,65 @@ public class MainActivity extends Activity {
         }.execute();
     }
 
-    //Get Groups
-    public void getUserGroups(){
-        MainActivity.this.groupNames = new ArrayList<String>(Arrays.asList(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("fullName", "NULL").split("#,")));
-        MainActivity.this.groupNames.add("FakeGroup");
-        /*Log.i("GROUPS SAVED", MainActivity.this.groupNames.toString());*/
-        this.db.open();
-        for (String group : MainActivity.this.groupNames){
-            /*Log.i("GROUP SINGLE",group);*/
-            MainActivity.this.notification.put(group,this.db.getPostIdByGroup(group));
-        }
-        this.db.close();
+    //Get Group Names
+    public ArrayList<String> getGroupNames () {
+        /*ArrayList<String>   (Arrays.asList(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("notifications", "NULL").split("#,")));*/
+    }
+
+    //Do this on first run
+    public void onFirstRun(){
+        if (!usernameExists()) userLogin();
+        if (!groupsExist()) addGroup();
+    }
+
+    //Get User Name
+    public boolean usernameExists(){
+        this.username = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("username","");
+        return !this.username.equals("");
     }
 
     //Dialog Log in
+    public void userLogin(){
+        //Inflate Dialog View
+        final View view = MainActivity.this.getLayoutInflater().inflate(R.layout.signin_main,null);
+        //Prompt for username and password
+        new AlertDialog.Builder(MainActivity.this)
+                .setView(view)
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        EditText userInput = (EditText) view.findViewById(R.id.username);
+                        EditText passInput = (EditText) view.findViewById(R.id.password);
+                        MainActivity.this.username = userInput.getText().toString();
+                        MainActivity.this.password = passInput.getText().toString();
+                        //Save to preference
+                        getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                                .edit()
+                                .putString("username", userInput.getText().toString())
+                                .commit();
 
-    //Synchronize List of Post Ids and Grab from Server and sync to Database
+                        getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                                .edit()
+                                .putString("password", passInput.getText().toString())
+                                .commit();
+                        authenticate();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Do nothing.
+            }
+        }).show();
+        //Get User Login
+        MainActivity.this.username = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("username","");
+        MainActivity.this.password = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("password","");
+    }
+
+    //Add Group
+    public void addGroup(){
+
+    }
+
+    public boolean groupsExist(){
+        String groups = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("groupsInfo","");
+        return !groups.equals("");
+    }
 }

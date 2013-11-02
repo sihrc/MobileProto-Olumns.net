@@ -51,7 +51,6 @@ public class GroupListAdapter extends ArrayAdapter{
         Group group = this.groups.get(position);
 
         holder.groupName.setText(group.groupName);
-        holder.timeUpdated.setText("Last Updated: " + group.updated);
         holder.numNotification.setText(group.notification + " new threads");
 
         holder.icon.setImageResource(group.id);

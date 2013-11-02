@@ -4,13 +4,12 @@ package com.olumns.olumninet;
  * Created by chris on 10/31/13.
  */
 public class Group {
-    String groupName, notification, updated;
+    String groupName;
+    Integer notification;
     int id;
 
-    public Group(String groupName, String notification, String updated, int id){
+    public Group(String groupName, Integer notification){
         this.groupName = groupName;
         this.notification = notification;
-        this.updated = updated;
-        this.id = id;
     }
 }
