@@ -95,8 +95,6 @@ public class DBHandler {
         return parent;
     }
 
-    //Get date of most recent child Post
-
     //Getting All Post Ids by Group for merging purposes
     public ArrayList<String> getPostIdByGroup (String group){
         Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_ID}, DatabaseModel.POST_GROUP + " like '%" + group + "%'", null, null,null,null);

@@ -112,7 +112,9 @@ public class MainActivity extends Activity {
                 JSONObject auth = new JSONObject();
                 try{
                     auth.put("username", MainActivity.this.username);
+                    Log.i ("USERNAME", MainActivity.this.username);
                     auth.put("password", MainActivity.this.password);
+                    Log.i ("USERNAME", MainActivity.this.password);
                     StringEntity se = new StringEntity(auth.toString());
                     se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
                     get_auth.setEntity(se);
@@ -166,14 +168,16 @@ public class MainActivity extends Activity {
 
     //Do this on first run
     public void onFirstRun(){
-        if (!usernameExists()) userLogin();
+        if (!fullNameExists()) userLogin();
         if (!groupsExist()) addGroup();
     }
 
     //Get User Name
-    public boolean usernameExists(){
-        this.username = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("username","");
-        return !this.username.equals("");
+    public boolean fullNameExists(){
+        this.fullName = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("fullName","");
+        this.username = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("username","username");
+        Log.i ("FULLNAME RIGHT NOW IS", fullName);
+        return !this.fullName.equals("");
     }
 
     //Dialog Log in
@@ -187,6 +191,7 @@ public class MainActivity extends Activity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         EditText userInput = (EditText) view.findViewById(R.id.username);
                         EditText passInput = (EditText) view.findViewById(R.id.password);
+                        userInput.setText(MainActivity.this.username);
                         MainActivity.this.username = userInput.getText().toString();
                         MainActivity.this.password = passInput.getText().toString();
                         //Save to preference
@@ -213,6 +218,7 @@ public class MainActivity extends Activity {
 
     //Add Group
     public void addGroup(){
+        db.open();
         //Preset Groups for now, should get from server
         final ArrayList <String> databaseGroups = new ArrayList<String>(){};
         databaseGroups.add("Helpme");
@@ -221,6 +227,14 @@ public class MainActivity extends Activity {
 
         //Single Course Input
         final AutoCompleteTextView groupList = new AutoCompleteTextView(MainActivity.this);
+        groupList.setThreshold(0);
+        //groupList.setDropDownHeight(2);
+        groupList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                groupList.showDropDown();
+            }
+        });
         groupList.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_dropdown_item_1line, databaseGroups));
 
         new AlertDialog.Builder(MainActivity.this)
@@ -249,7 +263,8 @@ public class MainActivity extends Activity {
             public void onClick(DialogInterface dialog, int whichButton) {
                 // Do nothing.
             }
-        }).show();
+        })
+           .show();
     }
 
     //Add a group to the server
