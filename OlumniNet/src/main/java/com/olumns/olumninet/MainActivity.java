@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
@@ -34,7 +35,7 @@ import java.util.HashMap;
 public class MainActivity extends Activity {
     public String fullName, username, password;
     public ArrayList<String> groupNames;
-    public HashMap<String,ArrayList<String>> notification;
+    public HashMap<String,ArrayList<String>> notification = new HashMap<String, ArrayList<String>>();
     public DBHandler db = new DBHandler(this);
 
     @Override
@@ -146,10 +147,15 @@ public class MainActivity extends Activity {
 
     //Get Groups
     public void getUserGroups(){
-        MainActivity.this.groupNames = (ArrayList<String>)Arrays.asList(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("fullName", "").split("#,"));
+        MainActivity.this.groupNames = new ArrayList<String>(Arrays.asList(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("fullName", "NULL").split("#,")));
+        MainActivity.this.groupNames.add("FakeGroup");
+        /*Log.i("GROUPS SAVED", MainActivity.this.groupNames.toString());*/
         this.db.open();
-        for (String group : groupNames){notification.put(group,this.db.getPostIdByGroup(group));}
-        db.close();
+        for (String group : MainActivity.this.groupNames){
+            /*Log.i("GROUP SINGLE",group);*/
+            MainActivity.this.notification.put(group,this.db.getPostIdByGroup(group));
+        }
+        this.db.close();
     }
 
     //Dialog Log in

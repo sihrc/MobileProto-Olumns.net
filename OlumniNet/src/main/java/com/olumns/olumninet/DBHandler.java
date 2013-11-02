@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,21 @@ public class DBHandler {
         addPost(post);
     }
 
+    public ArrayList<String> getAllPostIds(){
+        Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_ID},null, null, null, DatabaseModel.POST_DATE, null);
+        ArrayList<String> ids = new ArrayList<String>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()){
+            ids.add(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        if (ids.size() < 1){
+            ids.add("1111");
+        }
+        Log.i("IDS FROM GROUP", ids.toString());
+        return ids;
+    }
     //Adding a Post
     public void addPost(Post newPost){
         //Creating a value holder
@@ -66,12 +82,12 @@ public class DBHandler {
     //Getting Posts by Parent to populate group view and detail view
     public ArrayList<Post> getPostsByParent(String parent){
         return sweepCursor(
-        database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_PARENT + " = " + parent, null, null, DatabaseModel.POST_DATE, null));
+        database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_PARENT + " like '%" + parent + "%'", null, null, DatabaseModel.POST_DATE, null));
     }
 
     //Getting All Post Ids by Group for merging purposes
     public ArrayList<String> getPostIdByGroup (String group){
-        Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_ID}, DatabaseModel.POST_GROUP + " = " + group, null, null,null,null);
+        Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_ID}, DatabaseModel.POST_GROUP + " like '%" + group + "%'", null, null,null,null);
         ArrayList<String> ids = new ArrayList<String>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
@@ -79,12 +95,16 @@ public class DBHandler {
             cursor.moveToNext();
         }
         cursor.close();
+        if (ids.size() < 1){
+            ids.add("1111");
+        }
+        Log.i("IDS FROM GROUP", ids.toString());
         return ids;
     }
 
     //Delete Posts by ID
     public void deletePostById(String id){
-        database.delete(DatabaseModel.TABLE_NAME, DatabaseModel.POST_ID + " = " + id, null);
+        database.delete(DatabaseModel.TABLE_NAME, DatabaseModel.POST_ID + " like '%" + id + "%'", null);
     }
 
     //Get Posts from Cursor

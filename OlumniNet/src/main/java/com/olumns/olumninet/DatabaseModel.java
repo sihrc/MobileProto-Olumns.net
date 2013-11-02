@@ -12,7 +12,7 @@ import android.util.Log;
 public class DatabaseModel extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "posts";
     public static final String POST_POSTER  = "poster";
-    public static final String POST_GROUP  = "group";
+    public static final String POST_GROUP  = "listgroup";
     public static final String POST_SUBJECT  = "subject";
     public static final String POST_MESSAGE  = "message";
     public static final String POST_DATE  = "date";
