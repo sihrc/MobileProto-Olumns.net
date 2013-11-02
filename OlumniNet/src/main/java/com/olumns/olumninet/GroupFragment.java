@@ -80,7 +80,8 @@ public class GroupFragment extends Fragment{
         this.db.open();
         for (String setName:groupNames){
             String[] parts = setName.split("$");
-            this.notifications.put(parts[0],this.db.getPostIdByGroup(parts[0]).size() - Integer.parseInt(parts[1]));
+            if (parts.length > 1)
+                this.notifications.put(parts[0],this.db.getPostIdByGroup(parts[0]).size() - Integer.parseInt(parts[1]));
         }
         this.db.close();
     }

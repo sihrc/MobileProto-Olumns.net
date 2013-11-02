@@ -155,7 +155,13 @@ public class MainActivity extends Activity {
 
     //Get Group Names
     public ArrayList<String> getGroupNames () {
-        /*ArrayList<String>   (Arrays.asList(getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("notifications", "NULL").split("#,")));*/
+        ArrayList<String> groups = new ArrayList<String>();
+        String[] setGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("notifications", "NULL").split("#,");
+        for (String setGroup : setGroups){
+            String[] parts = setGroup.split("$");
+            groups.add(parts[0]);
+        }
+        return groups;
     }
 
     //Do this on first run
@@ -236,7 +242,7 @@ public class MainActivity extends Activity {
                         //Save to preference
                         getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                                 .edit()
-                                .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size())
+                                .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
                                 .commit();
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
