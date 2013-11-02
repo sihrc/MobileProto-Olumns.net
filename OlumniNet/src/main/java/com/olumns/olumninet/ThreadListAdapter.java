@@ -44,12 +44,13 @@ public class ThreadListAdapter extends ArrayAdapter {
             convertView.setTag(holder);
         } else holder = (PostHolder) convertView.getTag();
 
-        Post parentPost = this.parentPosts.get(position);
+        DBHandler db = new DBHandler(context);
+        Post parentPost = db.getThreadInfo(this.parentPosts.get(position));
 
         holder.subject.setText(parentPost.subject);
         holder.author.setText(parentPost.poster);
-//        holder.numPosts.setText(numChildren(parentPost) + "");
-//        holder.timeUpdated.setText("Last Updated:" + lastUpdated(parentPost));
+        holder.numPosts.setText(parentPost.numChild + " of Posts");
+        holder.timeUpdated.setText("Last Updated: " + parentPost.lastDate);
 
         return convertView;
     }
