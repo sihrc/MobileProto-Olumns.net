@@ -21,6 +21,7 @@ import com.teamolumn.olumninet.R;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -339,7 +340,67 @@ public class MainActivity extends Activity {
 
     //Get Groups from the server
     public void pullGroupsFromServer(){
+        new AsyncTask<Void, Void, Void>(){
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+            InputStream inputStream = null;
+            String result = "";
 
+            @Override
+            protected void onPreExecute() {
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+            protected Void doInBackground(Void... voids) {
+                try {
+                    String website = "http://olumni-server.herokuapp.com/groups";
+                    HttpGet all_tasks = new HttpGet(website);
+                    all_tasks.setHeader("Content-type","application/json");
+
+                    response = client.execute(all_tasks);
+                    response.getStatusLine().getStatusCode();
+                    HttpEntity entity = response.getEntity();
+
+                    inputStream = entity.getContent();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder();
+
+                    String line;
+                    String nl = System.getProperty("line.separator");
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line);
+                        sb.append(nl);
+                    }
+                    result = sb.toString();
+                }
+                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
+                finally{try{if(inputStream != null)inputStream.close();}catch(Exception squish){squish.printStackTrace();}}
+
+                if (!result.equals("")){
+                    JSONArray jArray = new JSONArray();
+                    JSONObject jsonObj;
+                    try{
+                        jsonObj = new JSONObject(result);
+                        jArray = jsonObj.getJSONArray("groups");
+                    } catch(JSONException e) {
+                        e.printStackTrace();
+                        Log.i("JSONPARSER", "ERROR PARSING JSON");
+                    }
+                    StringBuilder groupList = new StringBuilder();
+                    for (int i=0; i < jArray.length(); i++) {
+                        try {
+                            // Pulling items from the array
+                            groupList.append(jArray.getString(i));
+                            }catch (JSONException e){e.printStackTrace();
+                        }
+                    }
+                    getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                            .edit()
+                            .putString("allGroups", groupList.toString())
+                            .commit();
+                }
+                return null;
+            }
+        }.execute();
     }
 
     //Check if Groups Exist
@@ -471,7 +532,6 @@ public class MainActivity extends Activity {
                 sb.append("&");
                 i++;
             }
-
         }
         return sb.toString();
     }
