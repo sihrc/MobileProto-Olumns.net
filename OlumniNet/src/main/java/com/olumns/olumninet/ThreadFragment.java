@@ -69,8 +69,12 @@ public class ThreadFragment extends Fragment {
 //        post1.numChild = "0";
 //        fakePosts.add(post1);
 
+        db = new DBHandler(activity);
+        db.open();
+        ArrayList<Post> threads = db.getThreadsByGroup(curGroup);
+        Log.i("Threads",threads.toString());
         // Set up the ArrayAdapter for the Thread List
-        threadListAdapter = new ThreadListAdapter(activity, new ArrayList<Post>());
+        threadListAdapter = new ThreadListAdapter(activity, threads);
         threadList = (ListView) v.findViewById(R.id.thread_list);
         threadList.setAdapter(threadListAdapter);
 
@@ -80,6 +84,7 @@ public class ThreadFragment extends Fragment {
     //Refresh Group List View
     public void refreshListView(){
         ArrayList<Post> threads = db.getThreadsByGroup(curGroup);
+        Log.i("Threads",threads.toString());
         this.threadListAdapter = new ThreadListAdapter(activity, threads);
         this.threadList.setAdapter(this.threadListAdapter);
         this.threadListAdapter.notifyDataSetChanged();
@@ -109,11 +114,9 @@ public class ThreadFragment extends Fragment {
                             dialog.dismiss();
                         }
 
-                        Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), null, "Unresolved");
+                        Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), "None", "Unresolved");
 
                         //Add post to server
-                        db = new DBHandler(activity);
-                        db.open();
                         db.addPost(newPost);
 
                         refreshListView();
@@ -129,7 +132,7 @@ public class ThreadFragment extends Fragment {
     //Create Options Menu
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.group_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

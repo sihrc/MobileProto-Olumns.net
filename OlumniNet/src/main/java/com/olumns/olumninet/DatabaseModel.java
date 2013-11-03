@@ -27,7 +27,6 @@ public class DatabaseModel extends SQLiteOpenHelper {
     private static final String DATABASE_CREATE = "create table "
             + TABLE_NAME + "("
             + "_id" + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + TABLE_NAME + " TEXT NOT NULL, "
             + POST_POSTER + " TEXT NOT NULL, "
             + POST_GROUP + " TEXT NOT NULL, "
             + POST_SUBJECT + " TEXT NOT NULL, "

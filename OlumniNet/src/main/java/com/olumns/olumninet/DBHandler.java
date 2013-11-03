@@ -86,7 +86,7 @@ public class DBHandler {
     //Getting Threads by Group
     public ArrayList<Post> getThreadsByGroup(String group){
         return sweepCursor(
-        database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_GROUP + " like '%" + group + "%'", null, null, null, null, DatabaseModel.POST_DATE));
+        database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_GROUP + " like '%" + group + "%'", null, null, null, DatabaseModel.POST_DATE));
     }
 
     //Getting Posts by Thread
