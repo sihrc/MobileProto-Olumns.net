@@ -99,7 +99,7 @@ public class GroupFragment extends Fragment{
         String raw =  activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
         if (!raw.equals("")){
             HashMap<String, Integer> newNotifications = new HashMap<String, Integer>();
-            Log.i ("GROUPRAW",raw); //EDIT HERE
+            Log.i ("GROUP-RAW",raw); //EDIT HERE
             for (String setGroup : raw.split("#,")){
                 String[] parts = setGroup.split("\\$");
                 if (!this.notifications.containsKey(parts[0])){
@@ -141,14 +141,14 @@ public class GroupFragment extends Fragment{
         groupList.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_dropdown_item_1line, databaseGroups));
 
         new AlertDialog.Builder(activity)
-                .setTitle("Subscribe to a New List")
-                .setMessage("Please choose an existing list, or create a new list.")
+                .setTitle("Subscribe to a New Group")
+                .setMessage("Please choose an existing group, or create a new group.")
                 .setView(groupList)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String newGroup = groupList.getText().toString();
                         if (newGroup.length() < 1) {
-                            Toast.makeText(activity, "Give the group a name!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "Give the list a name!", Toast.LENGTH_LONG).show();
                         }
 
                         //Add course to server, if it doesn't exist on the server

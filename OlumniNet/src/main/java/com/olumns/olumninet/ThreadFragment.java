@@ -65,7 +65,6 @@ public class ThreadFragment extends Fragment {
     //On Fragment Creation
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.curGroup = this.activity.curGroup;
         try {
             ActionBar actionbar = (ActionBar) getActivity().getActionBar();
             actionbar.selectTab(null);
@@ -75,7 +74,7 @@ public class ThreadFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        this.curGroup = this.activity.curGroup;
         View v = inflater.inflate(R.layout.threads_fragment,null);
         setHasOptionsMenu(true);
 
@@ -84,7 +83,7 @@ public class ThreadFragment extends Fragment {
 
         updateNotificationsForGroup(curGroup);
 
-        threads = db.getThreadsByGroup(curGroup);
+        threads = db.getThreadsByGroup(curGroup); //IDS EXIST HERE
         Log.i("Threads",threads.toString());
         // Set up the ArrayAdapter for the Thread List
         threadListAdapter = new ThreadListAdapter(activity, threads);
@@ -95,7 +94,12 @@ public class ThreadFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Add Connection to invisible Tab
-                activity.curPost = threads.get(i);
+                refreshListView();
+                /*for (Post group:ThreadFragment.this.threads){
+                    Log.i("POSTIDPOSTID",group.id);
+                }*/
+                activity.curPost = ThreadFragment.this.threads.get(i);
+                //Log.i("POSTIDPOSTID222",activity.curPost.id);
                 PostFragment newFragment = new PostFragment();
                 FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
 
@@ -181,16 +185,24 @@ public class ThreadFragment extends Fragment {
 
                     JSONObject json = new JSONObject();
                     json.put("group",post.groups);
-                    json.put("parent",post.parent);
+                    json.put("parentItem",post.parent);
                     json.put("username",post.poster);
                     json.put("date",post.date);
                     /*json.put("lastDate",post.lastDate);*/
                     json.put("message",post.message);
                     json.put("viewers", "public");
-                    json.put("reply", false);
+                    json.put("reply", "false");
+
+/*                    Log.i("group",post.groups);
+                    Log.i("parentItem",post.parent);
+                    Log.i("username",post.poster);
+                    Log.i("date",post.date);
+                    Log.i("message",post.message);
+                    Log.i("viewers", "public");
+                    Log.i("reply", "false");*/
+
 
                     StringEntity se = new StringEntity(json.toString());
-                    Log.i("JSON ENTITY",se.toString());
                     se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
                     createSessions.setEntity(se);
 
@@ -213,8 +225,8 @@ public class ThreadFragment extends Fragment {
                 //READ THE RESULT INTO A JSON OBJECT
                 try {
                     JSONObject res = new JSONObject(result);
-                    if (res.getString("error").equals("true"))
-                        return res.getString("id");
+                    if (res.getString("error").equals("false"))
+                        return res.getString("postid");
                     else
                         return "ServerError";
                 } catch (JSONException e){e.printStackTrace();}

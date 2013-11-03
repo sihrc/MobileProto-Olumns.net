@@ -146,7 +146,7 @@ public class DBHandler {
 
     //Get Posts from Cursor
     public Post cursorToPost(Cursor cursor){
-        return new Post(
+        Post post = new Post(
             cursor.getString(0),
             cursor.getString(1),
             cursor.getString(2),
@@ -156,5 +156,8 @@ public class DBHandler {
             cursor.getString(6),
             cursor.getString(7)
         );
+        post.setId(cursor.getString(8));
+        Log.i ("IDLOLS", cursor.getString(8));
+        return post;
     }
 }
