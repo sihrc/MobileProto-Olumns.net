@@ -39,12 +39,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 /**
  * Created by chris on 10/27/13.
@@ -111,11 +106,11 @@ public class MainActivity extends Activity {
                 break;
             case R.id.remove_group:
                 final Dialog dialog = new Dialog(MainActivity.this);
-                dialog.setContentView(R.layout.delGroup_list);
+                dialog.setContentView(R.layout.delgroup_list);
                 dialog.setTitle("Remove Group");
                 ListView listView = (ListView) dialog.findViewById(R.id.list);
 
-                ArrayAdapter<String> ad = new ArrayAdapter<String>(this, R.layout.delGroup_list_item , R.id.singleItem, groupNames);
+                ArrayAdapter<String> ad = new ArrayAdapter<String>(this, R.layout.delgroup_list_item, R.id.singleItem, groupNames);
                 listView.setAdapter(ad);
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -362,7 +357,7 @@ public class MainActivity extends Activity {
     }
 
     private void removeGroup(String removeGroup) {
-        String currentGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "");
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "").split(",#");
         getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .edit()
                 .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
