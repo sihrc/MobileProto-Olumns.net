@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,6 +52,7 @@ public class ThreadFragment extends Fragment {
     //Views
     ThreadListAdapter threadListAdapter;
     ListView threadList;
+    ArrayList<Post> threads = new ArrayList<Post>();
 
 
     //On Fragment Attachment to Parent Activity (only time that you have access to Activity)
@@ -85,12 +87,27 @@ public class ThreadFragment extends Fragment {
 
         db = new DBHandler(activity);
         db.open();
-        ArrayList<Post> threads = db.getThreadsByGroup(curGroup);
+        threads = db.getThreadsByGroup(curGroup);
         Log.i("Threads",threads.toString());
         // Set up the ArrayAdapter for the Thread List
         threadListAdapter = new ThreadListAdapter(activity, threads);
         threadList = (ListView) v.findViewById(R.id.thread_list);
         threadList.setAdapter(threadListAdapter);
+
+        threadList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Add Connection to invisible Tab
+                activity.curPost = threads.get(i);
+                PostFragment newFragment = new PostFragment();
+                FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.fragmentContainer, newFragment);
+                transaction.addToBackStack(null);
+
+                transaction.commit();
+            }
+        });
 
         return v;
     }
@@ -129,6 +146,7 @@ public class ThreadFragment extends Fragment {
                         }
 
                         Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), "None", "Unresolved", activity.curGroup + "&");
+
 
                         //Add post to server
                         addThreadToServer(newPost);

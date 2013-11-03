@@ -15,4 +15,7 @@
     <string name="thread_create_main">Create a Thread</string>
     <string name="thread_create_subject">Subject</string>
     <string name="thread_create_message">Message</string>
+
+    <string name="post_create_main">Reply</string>
+    <string name="post_create_message">Message</string>
 </resources>

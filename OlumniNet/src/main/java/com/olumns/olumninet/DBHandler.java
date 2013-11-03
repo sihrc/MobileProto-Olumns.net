@@ -78,9 +78,6 @@ public class DBHandler {
         values.put(DatabaseModel.POST_ID, newPost.id);
         values.put(DatabaseModel.POST_VIEWERS, newPost.viewers);
 
-        //Eventually this needs to be from the server!!!!
-        /*values.put(DatabaseModel.POST_ID, 999);*/
-
         //Inserting into database
         this.database.insert(DatabaseModel.TABLE_NAME, null, values);
     }
