@@ -346,71 +346,6 @@ public class MainActivity extends Activity {
         }.execute();
     }
 
-    //Get Groups from the server
-    public void pullGroupsFromServer(){
-        new AsyncTask<Void, Void, Void>(){
-            HttpClient client = new DefaultHttpClient();
-            HttpResponse response;
-            InputStream inputStream = null;
-            String result = "";
-
-            @Override
-            protected void onPreExecute() {
-                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
-            }
-            protected Void doInBackground(Void... voids) {
-                try {
-                    String website = "http://olumni-server.herokuapp.com/groups";
-                    HttpGet all_tasks = new HttpGet(website);
-                    all_tasks.setHeader("Content-type","application/json");
-
-                    response = client.execute(all_tasks);
-                    response.getStatusLine().getStatusCode();
-                    HttpEntity entity = response.getEntity();
-
-                    inputStream = entity.getContent();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"),8);
-                    StringBuilder sb = new StringBuilder();
-
-                    String line;
-                    String nl = System.getProperty("line.separator");
-                    while ((line = reader.readLine())!= null){
-                        sb.append(line);
-                        sb.append(nl);
-                    }
-                    result = sb.toString();
-                }
-                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
-                finally{try{if(inputStream != null)inputStream.close();}catch(Exception squish){squish.printStackTrace();}}
-
-                if (!result.equals("")){
-                    JSONArray jArray = new JSONArray();
-                    JSONObject jsonObj;
-                    try{
-                        jsonObj = new JSONObject(result);
-                        jArray = jsonObj.getJSONArray("groups");
-                    } catch(JSONException e) {
-                        e.printStackTrace();
-                        Log.i("JSONPARSER", "ERROR PARSING JSON");
-                    }
-                    StringBuilder groupList = new StringBuilder();
-                    for (int i=0; i < jArray.length(); i++) {
-                        try {
-                            // Pulling items from the array
-                            groupList.append(jArray.getString(i));
-                            }catch (JSONException e){e.printStackTrace();
-                        }
-                    }
-                    getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                            .edit()
-                            .putString("allGroups", groupList.toString())
-                            .commit();
-                }
-                return null;
-            }
-        }.execute();
-    }
-
     //Check if Groups Exist
     public boolean groupsExist(){
         String groups = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("groupsInfo","");
@@ -436,10 +371,9 @@ public class MainActivity extends Activity {
                     getGroupNames();
                     String groupsString = makeStringFromArrayList(MainActivity.this.groupNames);
 
-                    String postIDString;
                     ArrayList<String> ids = MainActivity.this.db.getAllPostIds();
-                    if (ids.size() < 1) postIDString = "aaaaaaaaaaaa"; else postIDString = makeStringFromArrayList(ids);
-
+                    String postIDString = makeStringFromArrayList(ids);
+                    Log.i("SYNC ID",postIDString);
                     JSONObject json = new JSONObject();
                     json.put("postIDs", postIDString);
                     json.put("groups",groupsString);
@@ -463,7 +397,7 @@ public class MainActivity extends Activity {
                         sb.append(line + nl);
                     }
                     result = sb.toString();
-                    //Log.i("RESULT FROM SERVER", result);
+                    Log.i("RESULT FROM SERVER", result);
                 }catch (Exception e){e.printStackTrace();}
 
                 return result;

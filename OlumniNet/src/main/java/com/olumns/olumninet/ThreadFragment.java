@@ -150,6 +150,7 @@ public class ThreadFragment extends Fragment {
 
 
                         //Add post to server
+                        updateNotificationsForGroup(curGroup);
                         addThreadToServer(newPost);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -286,7 +287,7 @@ public class ThreadFragment extends Fragment {
                 sb.append(parts[0]);
                 sb.append("$");
                 if (group.equals(parts[0]))
-                    sb.append(db.getThreadsByGroup(group).size());
+                    sb.append(String.valueOf(db.getThreadsByGroup(group).size()));
                 else
                     sb.append(parts[1]);
                 sb.append("#,");

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,19 @@ import android.widget.Toast;
 
 import com.teamolumn.olumninet.R;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -51,7 +65,7 @@ public class GroupFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = new DBHandler(activity);
-        if (!activity.groupsExist()) addGroup();
+        if (!activity.groupsExist()) addGroupFromServer();
     }
 
     @Override
@@ -97,17 +111,19 @@ public class GroupFragment extends Fragment{
         this.db.open();
         String raw =  activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
         if (!raw.equals("")){
-            HashMap<String, Integer> newNotifications = new HashMap<String, Integer>();
+            this.notifications.clear();
+            //HashMap<String, Integer> newNotifications = new HashMap<String, Integer>();
             Log.i ("GROUP-RAW",raw); //EDIT HERE
             for (String setGroup : raw.split("#,")){
                 String[] parts = setGroup.split("\\$");
-                if (!this.notifications.containsKey(parts[0])){
+                this.notifications.put(parts[0],Integer.parseInt(parts[1]));
+                /*if (!this.notifications.containsKey(parts[0])){
                     newNotifications.put(parts[0], Integer.parseInt(parts[1]));
                 } else {
                     newNotifications.put(parts[0],this.notifications.get(parts[0]));
-                }
+                }*/
             }
-            this.notifications = newNotifications;
+            //this.notifications = newNotifications;
         }
     }
 
@@ -120,13 +136,8 @@ public class GroupFragment extends Fragment{
     }
 
     //Add Group
-    public void addGroup(){
+    public void addGroup(final ArrayList<String> databaseGroups){
         db.open();
-        //Preset Groups for now, should get from server
-        final ArrayList <String> databaseGroups = new ArrayList<String>(){};
-        databaseGroups.add("Helpme");
-        databaseGroups.add("CarpeDiem");
-        databaseGroups.add("Randomness");
 
         //Single Course Input
         final AutoCompleteTextView groupList = new AutoCompleteTextView(activity);
@@ -172,6 +183,69 @@ public class GroupFragment extends Fragment{
                 .show();
     }
 
+    //Get Groups from the server
+    public void addGroupFromServer(){
+        new AsyncTask<Void, Void, ArrayList<String>>(){
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+            InputStream inputStream = null;
+            String result = "";
+
+            @Override
+            protected void onPreExecute() {
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+            protected ArrayList<String> doInBackground(Void... voids) {
+                ArrayList<String> groups = new ArrayList<String>();
+                try {
+                    String website = "http://olumni-server.herokuapp.com/groups";
+                    HttpGet all_tasks = new HttpGet(website);
+                    all_tasks.setHeader("Content-type","application/json");
+
+                    response = client.execute(all_tasks);
+                    response.getStatusLine().getStatusCode();
+                    HttpEntity entity = response.getEntity();
+
+                    inputStream = entity.getContent();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder();
+
+                    String line;
+                    String nl = System.getProperty("line.separator");
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line);
+                        sb.append(nl);
+                    }
+                    result = sb.toString();
+                }
+                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
+                finally{try{if(inputStream != null)inputStream.close();}catch(Exception squish){squish.printStackTrace();}}
+
+                if (!result.equals("")){
+                    JSONArray jArray = new JSONArray();
+                    JSONObject jsonObj;
+                    try{
+                        jsonObj = new JSONObject(result);
+                        jArray = jsonObj.getJSONArray("groups");
+                    } catch(JSONException e) {
+                        e.printStackTrace();
+                        Log.i("JSONPARSER", "ERROR PARSING JSON");
+                    }
+                    for (int i=0; i < jArray.length(); i++) {
+                        try {
+                            // Pulling items from the array
+                            groups.add(jArray.getString(i));
+                        }catch (JSONException e){e.printStackTrace();
+                        }
+                    }
+                }
+                return groups;
+            }
+            protected void onPostExecute(ArrayList<String> groups){
+                addGroup(groups);
+            }
+        }.execute();
+    }
     //Create Options Menu
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -183,7 +257,7 @@ public class GroupFragment extends Fragment{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action1: //Add Group
-                addGroup();
+                addGroupFromServer();
                 break;
             case R.id.action2: //Remove Group
                 final Dialog dialog = new Dialog(activity);

@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.teamolumn.olumninet.R;
 
+import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +62,11 @@ public class ThreadListAdapter extends ArrayAdapter {
         } else {
             holder.numPosts.setText(parentPost.numChild + " Posts");
         }
-        Date date = new Date(Long.parseLong(parentPost.lastDate));
+        Date date = new Date();
+        try{
+        date = DateFormat.getDateInstance().parse(parentPost.lastDate);}
+        catch(ParseException e){e.printStackTrace();}
+
         holder.timeUpdated.setText("Updated: " + date.toString());
 
         return convertView;
