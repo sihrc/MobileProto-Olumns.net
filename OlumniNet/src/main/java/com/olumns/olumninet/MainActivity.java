@@ -258,26 +258,30 @@ public class MainActivity extends Activity {
 
                 return result;
             }
-        }.execute();finish();
+        }.execute();
     }
 
     public void removeGroup(String removeGroup) {
         StringBuilder newGroupsInfo = new StringBuilder();
-        for (String groupSet:getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "").split("#,")){
-            String[] parts = groupSet.split("$");
-            if (!parts[0].equals(removeGroup))
-                newGroupsInfo.append(parts[0]);
-            newGroupsInfo.append("$");
-            newGroupsInfo.append(parts[1]);
-            newGroupsInfo.append("#,");
+        String raw = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "");
+        if (!raw.equals("")){
+            for (String groupSet:raw.split("#,")){
+                String[] parts = groupSet.split("\\$");
+                if (!parts[0].equals(removeGroup)){
+                    newGroupsInfo.append(parts[0]);
+                    newGroupsInfo.append("$");
+                    newGroupsInfo.append(parts[1]);}
+                    newGroupsInfo.append("#,");
+                }
+
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                    .edit()
+                    .putString("groupsInfo",newGroupsInfo.toString())
+                    .commit();
+            HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
+            names.remove(removeGroup);
+            MainActivity.this.groupNames = new ArrayList<String>(names);
         }
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                .edit()
-                .putString("groupsInfo",newGroupsInfo.toString())
-                .commit();
-        HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
-        names.remove(removeGroup);
-        MainActivity.this.groupNames = new ArrayList<String>(names);
     }
 
     public void removeGroupFromServer(final String group) {
@@ -325,27 +329,10 @@ public class MainActivity extends Activity {
             }
 
             protected void onPostExecute(String result){
-                if (result != null && !result.isEmpty()) {
-                    JSONObject jsonObj = null;
-                    String error = null;
-                    if (!result.equals("")){
-                        try{
-                            jsonObj = new JSONObject(result);
-                        }catch (JSONException e){
-                            Log.i("jsonParse", "error converting string to json object");
-                        }
-                        try {
-                            error = jsonObj.getString("error");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (error.equals("false")) {
-                        removeGroup(group);
-                    }
+                removeGroup(group);
                 }
-            }
-        }.execute();finish();
+
+        }.execute();
     }
 
     //Get Groups from the server
