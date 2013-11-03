@@ -59,8 +59,8 @@ public class ThreadListAdapter extends ArrayAdapter {
         } else {
             holder.numPosts.setText(parentPost.numChild + " Posts");
         }
-        Date date=new Date(Integer.parseInt(parentPost.lastDate));
-        holder.timeUpdated.setText("Updated: " + date);
+        Date date = new Date(Long.parseLong(parentPost.lastDate));
+        holder.timeUpdated.setText("Updated: " + date.toString());
 
         return convertView;
     }
