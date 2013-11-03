@@ -1,5 +1,6 @@
 package com.olumns.olumninet;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -42,6 +43,7 @@ public class GroupFragment extends Fragment{
     //On Fragment Creation
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         db = new DBHandler(activity);
     }
 

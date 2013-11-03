@@ -1,5 +1,6 @@
 package com.olumns.olumninet;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -38,6 +39,10 @@ public class PostFragment extends Fragment {
     //On Fragment Creation
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            ActionBar actionbar = (ActionBar) getActivity().getActionBar();
+            actionbar.selectTab(null);
+        } catch (Exception e) {}
     }
 
     private class ParentPostHolder{
