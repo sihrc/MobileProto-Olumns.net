@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding = "10dp"
+            android:textSize = "@dimen/signin_heading"
+            android:scaleType="center"
+            android:gravity = "center"
+            android:textColor = "@android:color/white"
+            android:background="@android:color/holo_blue_light"
+            android:text = "@string/thread_create_main" />
+
+    <EditText
+            android:id="@+id/thread_subject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            android:hint="@string/thread_create_subject" />
+
+    <EditText
+            android:id="@+id/thread_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif"
+            android:hint="@string/thread_create_message"/>
+</LinearLayout>
