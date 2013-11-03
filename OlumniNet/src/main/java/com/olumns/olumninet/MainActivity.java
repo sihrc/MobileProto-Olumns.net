@@ -137,6 +137,9 @@ public class MainActivity extends Activity {
             }
             protected void onPostExecute(String fullName){
                 MainActivity.this.fullName = fullName;
+                //WE NEED TO REMOVE THIS
+                MainActivity.this.fullName = "CHRIS.LEE";
+                //WE NEED TO REMOVE THIS
                 //Save FullName
                 getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                         .edit()
