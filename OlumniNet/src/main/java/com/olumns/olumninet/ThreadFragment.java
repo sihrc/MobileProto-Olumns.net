@@ -132,6 +132,7 @@ public class ThreadFragment extends Fragment {
                         }
 
                         Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), "None", "Unresolved");
+                        newPost.setId("999");
 
                         //Add post to server
                         db.addPost(newPost);

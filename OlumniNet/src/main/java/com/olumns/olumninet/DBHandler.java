@@ -74,10 +74,7 @@ public class DBHandler {
         values.put(DatabaseModel.POST_DATE, newPost.date);
         values.put(DatabaseModel.POST_PARENT, newPost.parent);
         values.put(DatabaseModel.POST_STATUS, newPost.status);
-        //values.put(DatabaseModel.POST_ID, newPost.id);
-
-        //Eventually this needs to be from the server!!!!
-        values.put(DatabaseModel.POST_ID, 999);
+        values.put(DatabaseModel.POST_ID, newPost.id);
 
         //Inserting into database
         this.database.insert(DatabaseModel.TABLE_NAME, null, values);
