@@ -141,14 +141,14 @@ public class GroupFragment extends Fragment{
         groupList.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_dropdown_item_1line, databaseGroups));
 
         new AlertDialog.Builder(activity)
-                .setTitle("Add A Group")
-                .setMessage("Choose from the existing list, or create a new Group")
+                .setTitle("Subscribe to a New Group")
+                .setMessage("Please choose an existing group, or create a new group.")
                 .setView(groupList)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String newGroup = groupList.getText().toString();
                         if (newGroup.length() < 1) {
-                            Toast.makeText(activity, "Give the group a name!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, "Give the list a name!", Toast.LENGTH_LONG).show();
                         }
 
                         //Add course to server, if it doesn't exist on the server
