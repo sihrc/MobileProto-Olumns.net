@@ -49,7 +49,7 @@ public class DBHandler {
     }
 
     public ArrayList<String> getAllPostIds(){
-        Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_ID},null, null, null, DatabaseModel.POST_DATE, null);
+        Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_ID}, null, null, null, null, DatabaseModel.POST_DATE);
         ArrayList<String> ids = new ArrayList<String>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()){
@@ -63,6 +63,14 @@ public class DBHandler {
         Log.i("IDS FROM GROUP", ids.toString());
         return ids;
     }
+
+    //Get Post by Poster
+    public ArrayList<Post> getPostsByPoster(String poster){
+        return sweepCursor(
+                database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_POSTER + " like '%" + poster + "%'" , null, null, null, DatabaseModel.POST_DATE));
+
+    }
+
     //Adding a Post
     public void addPost(Post newPost){
         //Creating a value holder

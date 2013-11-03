@@ -25,7 +25,6 @@ import com.teamolumn.olumninet.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 /**
  * Created by zach on 10/30/13.
  */

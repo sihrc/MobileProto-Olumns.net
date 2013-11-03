@@ -33,6 +33,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by chris on 10/27/13.
@@ -79,6 +81,16 @@ public class MainActivity extends Activity {
         //OnFirstRun
         onFirstRun();
 
+        //Sync with Server
+        /*Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
+                updateLocalDatabase();
+            }
+        },0,1000);*/
+        db.open();
+        updateLocalDatabase();
         //Synchronize with Server
     }
 
@@ -423,7 +435,7 @@ public class MainActivity extends Activity {
 
                     getGroupNames();
                     String groupsString = makeStringFromArrayList(MainActivity.this.groupNames);
-                    String postIDString = makeStringFromArrayList(db.getAllPostIds());
+                    String postIDString = makeStringFromArrayList(MainActivity.this.db.getAllPostIds());
 
                     JSONObject json = new JSONObject();
                     json.put("postIDs", postIDString);
@@ -456,9 +468,6 @@ public class MainActivity extends Activity {
             }
 
             protected void onPostExecute(String result){
-                DBHandler db = new DBHandler(getApplicationContext());
-                db.open();
-
                 if (result != null && !result.isEmpty()) {
                     if (!result.equals("")){
                         JSONArray jArray = new JSONArray();
@@ -485,7 +494,6 @@ public class MainActivity extends Activity {
                                     if (viewerString.length() > 0 &&  j != viewerArray.length()-1) {
                                         viewerString.append("#");
                                     }
-
                                 }
 
                                 // Pulling items from the array
@@ -501,11 +509,22 @@ public class MainActivity extends Activity {
                                 String id = postObject.getString("_id");
                                 String viewers = viewerString.toString();
 
+                                Log.i("SYNC - group",group);
+                                Log.i("SYNC - parent",parent);
+                                Log.i("SYNC - userName",userName);
+                                Log.i("SYNC - date",date);
+                                Log.i("SYNC - lastDate",lastDate);
+                                Log.i("SYNC - message",message);
+                                Log.i("SYNC - resolved",resolved);
+                                Log.i("SYNC - reply",reply);
+                                Log.i("SYNC - subject",subject);
+                                Log.i("SYNC - id",id);
+                                Log.i("SYNC - viewers",viewers);
 
                                 Post post = new Post(userName, group, subject, message, date, parent, resolved, viewers);
                                 post.setId(id);
                                 post.setLastDate(lastDate);
-                                db.addPost(post);
+                                MainActivity.this.db.addPost(post);
 
                             } catch (JSONException e) {
                                 Log.i("jsonParse", "error in iterating");
@@ -514,7 +533,7 @@ public class MainActivity extends Activity {
 
                 } else {Log.i("jsonParse", "result is null");}
             }
-        }.execute();finish();
+        }.execute();
     }
 
     public String makeStringFromArrayList(ArrayList<String> array) {
