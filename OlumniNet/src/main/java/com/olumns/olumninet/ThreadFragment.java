@@ -189,18 +189,20 @@ public class ThreadFragment extends Fragment {
                     json.put("parentItem",post.parent);
                     json.put("username",post.poster);
                     json.put("date",post.date);
+                    json.put("subject",post.subject);
                     /*json.put("lastDate",post.lastDate);*/
                     json.put("message",post.message);
                     json.put("viewers", "public");
                     json.put("reply", "false");
 
-/*                    Log.i("group",post.groups);
+                    Log.i("group",post.groups);
                     Log.i("parentItem",post.parent);
                     Log.i("username",post.poster);
+                    Log.i("subject",post.subject);
                     Log.i("date",post.date);
                     Log.i("message",post.message);
                     Log.i("viewers", "public");
-                    Log.i("reply", "false");*/
+                    Log.i("reply", "false");
 
 
                     StringEntity se = new StringEntity(json.toString());

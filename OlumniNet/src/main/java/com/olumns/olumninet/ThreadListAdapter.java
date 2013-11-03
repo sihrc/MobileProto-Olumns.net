@@ -13,6 +13,7 @@ import com.teamolumn.olumninet.R;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -64,7 +65,10 @@ public class ThreadListAdapter extends ArrayAdapter {
         }
         Date date = new Date();
         try{
-        date = DateFormat.getDateInstance().parse(parentPost.lastDate);}
+        String pattern = "dd-MMM-yyyy HH:mm:ss.SSS";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        date = sdf.parse(parentPost.lastDate);
+        }
         catch(ParseException e){e.printStackTrace();}
 
         holder.timeUpdated.setText("Updated: " + date.toString());
