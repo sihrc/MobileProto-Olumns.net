@@ -495,7 +495,7 @@ public class MainActivity extends Activity {
                                         viewerString.append("#");
                                     }
                                 }
-
+                                Log.i ("DEBUG", "I GET HERE");
                                 // Pulling items from the array
                                 String group = postObject.getString("group");
                                 String parent = postObject.getString("parent");
@@ -505,7 +505,7 @@ public class MainActivity extends Activity {
                                 String message = postObject.getString("message");
                                 String resolved = postObject.getString("resolved");
                                 String reply = postObject.getString("reply");
-                                String subject = postObject.getString("subject");
+                                //String subject = postObject.getString("subject");
                                 String id = postObject.getString("_id");
                                 String viewers = viewerString.toString();
 
@@ -517,11 +517,11 @@ public class MainActivity extends Activity {
                                 Log.i("SYNC - message",message);
                                 Log.i("SYNC - resolved",resolved);
                                 Log.i("SYNC - reply",reply);
-                                Log.i("SYNC - subject",subject);
+                                //Log.i("SYNC - subject",subject);
                                 Log.i("SYNC - id",id);
                                 Log.i("SYNC - viewers",viewers);
 
-                                Post post = new Post(userName, group, subject, message, date, parent, resolved, viewers);
+                                Post post = new Post(userName, group, "", message, date, parent, resolved, viewers);
                                 post.setId(id);
                                 post.setLastDate(lastDate);
                                 MainActivity.this.db.addPost(post);
