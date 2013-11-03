@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by zach on 11/2/13.
@@ -78,15 +79,11 @@ public class ThreadFragment extends Fragment {
         View v = inflater.inflate(R.layout.threads_fragment,null);
         setHasOptionsMenu(true);
 
-//        //Fake Data
-//        ArrayList<Post> fakePosts = new ArrayList<Post>();
-//        Post post1 = new Post("Test", "CarpeDiem", "Test", "Testing is fun!", "99999999", null, "Unresolved");
-//        post1.lastDate = "Today";
-//        post1.numChild = "0";
-//        fakePosts.add(post1);
-
         db = new DBHandler(activity);
         db.open();
+
+        updateNotificationsForGroup(curGroup);
+
         threads = db.getThreadsByGroup(curGroup);
         Log.i("Threads",threads.toString());
         // Set up the ArrayAdapter for the Thread List
@@ -114,7 +111,7 @@ public class ThreadFragment extends Fragment {
 
     //Refresh Group List View
     public void refreshListView(){
-        ArrayList<Post> threads = db.getThreadsByGroup(curGroup);
+        this.threads = db.getThreadsByGroup(curGroup);
         Log.i("Threads",threads.toString());
         this.threadListAdapter = new ThreadListAdapter(activity, threads);
         this.threadList.setAdapter(this.threadListAdapter);
@@ -265,5 +262,27 @@ public class ThreadFragment extends Fragment {
                 break;
         }
         return true;
+    }
+
+    public void updateNotificationsForGroup(String group){
+        String raw = activity.getSharedPreferences("PREFERENCE",activity.MODE_PRIVATE).getString("groupsInfo","");
+        StringBuilder sb = new StringBuilder();
+
+        if (!raw.equals("")){
+            for (String setGroup : raw.split("#,")){
+                String[] parts = setGroup.split("\\$");
+                sb.append(parts[0]);
+                sb.append("$");
+                if (group.equals(parts[0]))
+                    sb.append(db.getThreadsByGroup(group));
+                else
+                    sb.append(parts[1]);
+                sb.append("#,");
+            }
+            activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)
+                    .edit()
+                    .putString("groupsInfo",sb.toString())
+                    .commit();
+        }
     }
 }
