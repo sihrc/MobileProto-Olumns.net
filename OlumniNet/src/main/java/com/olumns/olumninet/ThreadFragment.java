@@ -163,7 +163,7 @@ public class ThreadFragment extends Fragment {
     //Create Options Menu
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.group_menu, menu);
+        inflater.inflate(R.menu.thread_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

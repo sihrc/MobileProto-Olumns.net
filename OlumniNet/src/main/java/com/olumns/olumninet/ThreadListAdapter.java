@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.teamolumn.olumninet.R;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,8 +54,13 @@ public class ThreadListAdapter extends ArrayAdapter {
 
         holder.subject.setText(parentPost.subject);
         holder.author.setText(parentPost.poster);
-        holder.numPosts.setText(parentPost.numChild + " of Posts");
-        holder.timeUpdated.setText("Last Updated: " + parentPost.lastDate);
+        if (Integer.parseInt(parentPost.numChild) == 1) {
+            holder.numPosts.setText("1 Post");
+        } else {
+            holder.numPosts.setText(parentPost.numChild + " Posts");
+        }
+        Date date=new Date(Integer.parseInt(parentPost.lastDate));
+        holder.timeUpdated.setText("Updated: " + date);
 
         return convertView;
     }

@@ -13,6 +13,7 @@
             android:layout_marginBottom="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
+            android:fontFamily="sans-serif-light"
             ></TextView>
 
     <TextView
@@ -24,6 +25,7 @@
             android:layout_below="@id/thread_subject"
             android:layout_marginTop="4dp"
             android:layout_marginLeft="8dp"
+            android:fontFamily="sans-serif-light"
             ></TextView>
 
     <TextView
@@ -36,6 +38,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="4dp"
+            android:fontFamily="sans-serif-light"
             ></TextView>
 
     <TextView
@@ -48,6 +51,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginRight="8dp"
             android:layout_below="@id/thread_post_number"
+            android:fontFamily="sans-serif-light"
             ></TextView>
 
 
