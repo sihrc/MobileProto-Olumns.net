@@ -141,8 +141,8 @@ public class GroupFragment extends Fragment{
         groupList.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_dropdown_item_1line, databaseGroups));
 
         new AlertDialog.Builder(activity)
-                .setTitle("Add A Course")
-                .setMessage("Choose from the existing list, or create a new course")
+                .setTitle("Subscribe to a New List")
+                .setMessage("Please choose an existing list, or create a new list.")
                 .setView(groupList)
                 .setPositiveButton("Add", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
