@@ -50,8 +50,12 @@ public class ThreadFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.threads_fragment,null);
 
-        //Fake Data
-        ArrayList<Post> fakePosts = new ArrayList<Post>();
+//        //Fake Data
+//        ArrayList<Post> fakePosts = new ArrayList<Post>();
+//        Post post1 = new Post("Test", "CarpeDiem", "Test", "Testing is fun!", "99999999", null, "Unresolved");
+//        post1.lastDate = "Today";
+//        post1.numChild = "0";
+//        fakePosts.add(post1);
 
         // Set up the ArrayAdapter for the Thread List
         threadListAdapter = new ThreadListAdapter(activity, new ArrayList<Post>());
