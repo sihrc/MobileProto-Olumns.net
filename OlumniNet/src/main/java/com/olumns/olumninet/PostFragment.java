@@ -68,6 +68,8 @@ public class PostFragment extends Fragment {
         holder.message.setText(curPost.message);
 
         // Set up the ArrayAdapter for the Thread List
+        db = new DBHandler(activity);
+        db.open();
         postListAdapter = new PostListAdapter(activity, db.getPostsByThread(curPost.id));
         postList = (ListView) v.findViewById(R.id.post_children);
         postList.setAdapter(postListAdapter);
