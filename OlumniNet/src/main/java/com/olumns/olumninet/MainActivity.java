@@ -47,7 +47,7 @@ import java.util.Set;
 public class MainActivity extends Activity {
     public String fullName, username, password, curGroup;
     public Post curPost;
-    public ArrayList<String> groupNames;
+    public ArrayList<String> groupNames = new ArrayList<String>();
     public DBHandler db = new DBHandler(this);
 
     @Override

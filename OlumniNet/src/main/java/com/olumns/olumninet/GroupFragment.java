@@ -12,9 +12,8 @@ import android.widget.ListView;
 import com.teamolumn.olumninet.R;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Set;
+
 
 /**
  * Created by zach on 10/30/13.
@@ -40,6 +39,7 @@ public class GroupFragment extends Fragment{
     //On Fragment Creation
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = new DBHandler(activity);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class GroupFragment extends Fragment{
         View v = inflater.inflate(R.layout.groups_fragment,null);
 
         // Set up the ArrayAdapter for the Group List
-        groupListAdapter = new GroupListAdapter(activity, new ArrayList<Group>());
+        groupListAdapter = new GroupListAdapter(activity, getGroupsFromNames(new ArrayList<String>(this.notifications.keySet())));
         groupList = (ListView) v.findViewById(R.id.groupList);
         groupList.setAdapter(groupListAdapter);
 
@@ -58,9 +58,7 @@ public class GroupFragment extends Fragment{
 
     public void onResume(){
         super.onResume();
-        db = new DBHandler(activity);
         db.open();
-        Log.i("CurGroups",this.notifications.keySet().toString());
         groupListAdapter = new GroupListAdapter(activity, getGroupsFromNames(new ArrayList<String>(this.notifications.keySet())));
         groupListAdapter.notifyDataSetChanged();
     }
@@ -76,13 +74,24 @@ public class GroupFragment extends Fragment{
 
     //Get Number of notifications
     public void getCurrentGroupNotifications(){
-        activity.getGroupNames();
+        updateNotificationsHash();
         this.db.open();
-        for (String setName:activity.groupNames){
-            String[] parts = setName.split("$");
-            if (parts.length > 1)
-                this.notifications.put(parts[0],this.db.getPostIdByGroup(parts[0]).size() - Integer.parseInt(parts[1]));
+        if (this.notifications.size() > 0){
+            for (String setName:this.notifications.keySet()){
+                String[] parts = setName.split("$");
+                if (parts.length > 1)
+                    this.notifications.put(parts[0],this.db.getPostIdByGroup(parts[0]).size() - Integer.parseInt(parts[1]));
+            }
         }
-        this.db.close();
+    }
+
+    public void updateNotificationsHash(){
+        this.db.open();
+        for (String group: activity.groupNames){
+            Log.i ("GROUPS", group);
+            if (!this.notifications.containsKey(group)){
+                this.notifications.put(group,this.db.getPostIdByGroup(group).size());
+            }
+        }
     }
 }
