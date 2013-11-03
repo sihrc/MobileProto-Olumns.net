@@ -357,14 +357,22 @@ public class MainActivity extends Activity {
     }
 
     private void removeGroup(String removeGroup) {
-/*        getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "").split(",#");
+        StringBuilder newGroupsInfo = new StringBuilder();
+        for (String groupSet:getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "").split("#,")){
+            String[] parts = groupSet.split("$");
+            if (!parts[0].equals(removeGroup))
+                newGroupsInfo.append(parts[0]);
+            newGroupsInfo.append("$");
+            newGroupsInfo.append(parts[1]);
+            newGroupsInfo.append("#,");
+        }
         getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                 .edit()
-                .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
+                .putString("groupsInfo",newGroupsInfo.toString())
                 .commit();
         HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
         names.remove(removeGroup);
-        MainActivity.this.groupNames = new ArrayList<String>(names);*/
+        MainActivity.this.groupNames = new ArrayList<String>(names);
     }
 
     private void removeGroupFromServer(final String group) {
