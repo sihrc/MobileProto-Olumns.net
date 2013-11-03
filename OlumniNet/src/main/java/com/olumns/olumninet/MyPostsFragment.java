@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +54,35 @@ public class MyPostsFragment extends Fragment{
         myPostList = (ListView) v.findViewById(R.id.myPostsList);
         myPostList.setAdapter(myPostsListAdapter);
 
+        myPostList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Add Connection to invisible Tab
+                refreshListView();
+                /*for (Post group:ThreadFragment.this.threads){
+                    Log.i("POSTIDPOSTID",group.id);
+                }*/
+                activity.curPost = MyPostsFragment.this.myposts.get(i);
+                activity.curGroup = activity.curPost.groups;
+                //Log.i("POSTIDPOSTID222",activity.curPost.id);
+                PostFragment newFragment = new PostFragment();
+                FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.fragmentContainer, newFragment);
+                transaction.addToBackStack(null);
+
+                transaction.commit();
+            }
+        });
+
         return v;
     }
 
+    //Refresh Group List View
+    public void refreshListView(){
+        this.myposts = db.getPostsByPoster(activity.fullName);
+        this.myPostsListAdapter = new MyPostsListAdapter(activity, myposts);
+        this.myPostList.setAdapter(myPostsListAdapter);
+        this.myPostsListAdapter.notifyDataSetChanged();
+    }
 }
