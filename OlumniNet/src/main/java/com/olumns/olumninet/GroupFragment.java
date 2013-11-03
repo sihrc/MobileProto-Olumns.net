@@ -87,16 +87,10 @@ public class GroupFragment extends Fragment{
     public void getGroupsFromNames(){
         db.open();
         getLocalNotificationsHash();
-        if (this.groups.size() != notifications.size()){
-            this.groups = new ArrayList<Group>();
-            for (String group :this.notifications.keySet())
-                this.groups.add(new Group(group,db.getPostIdByGroup(group).size() - this.notifications.get(group)));
-        }
-        else {
-            for (Group group: this.groups){
-                group.setNotification(this.db.getPostIdByGroup(group.groupName).size() - notifications.get(group.groupName));
-            }
-        }
+        this.groups = new ArrayList<Group>();
+        for (String group :this.notifications.keySet())
+            this.groups.add(new Group(group,db.getPostIdByGroup(group).size() - this.notifications.get(group)));
+
     }
 
     //Update the notifications
@@ -104,7 +98,7 @@ public class GroupFragment extends Fragment{
         this.db.open();
         String raw =  activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
         if (!raw.equals("")){
-            Log.i ("GROUPRAW",raw);
+            Log.i ("GROUPRAW",raw); //EDIT HERE
             for (String setGroup : raw.split("#,")){
                 String[] parts = setGroup.split("\\$");
                 if (!this.notifications.containsKey(parts[0])){
