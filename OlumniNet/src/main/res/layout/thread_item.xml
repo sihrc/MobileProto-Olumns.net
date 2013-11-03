@@ -50,12 +50,5 @@
             android:layout_below="@id/thread_post_number"
             ></TextView>
 
-    <View
-            android:id="@+id/divider"
-            android:layout_height="1dp"
-            android:layout_width="match_parent"
-            android:background="#000000"
-            android:layout_alignParentBottom="true"
-            ></View>
 
 </RelativeLayout>

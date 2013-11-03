@@ -40,7 +40,7 @@ public class GroupListAdapter extends ArrayAdapter{
             convertView = inflater.inflate(R.layout.group_item, parent, false);
             holder = new GroupHolder();
 
-            holder.icon = (ImageView) convertView.findViewById(R.id.groupIcon);
+//            holder.icon = (ImageView) convertView.findViewById(R.id.groupIcon);
             holder.groupName = (TextView) convertView.findViewById(R.id.groupName);
             holder.timeUpdated = (TextView) convertView.findViewById(R.id.groupUpdate);
             holder.numNotification = (TextView) convertView.findViewById(R.id.groupNotification);
@@ -53,7 +53,7 @@ public class GroupListAdapter extends ArrayAdapter{
         holder.groupName.setText(group.groupName);
         holder.numNotification.setText(group.notification + " new threads");
 
-        holder.icon.setImageResource(group.id);
+//        holder.icon.setImageResource(group.id);
         return convertView;
     }
 }

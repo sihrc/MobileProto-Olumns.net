@@ -4,46 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id = "@+id/groupIcon"
+    <!--<ImageView-->
+        <!--android:id = "@+id/groupIcon"-->
+        <!--android:layout_height = "fill_parent"-->
+        <!--android:layout_width  = "wrap_content"-->
+        <!--android:layout_alignParentLeft = "true"-->
+        <!--android:layout_marginRight = "@dimen/iconBuffer"-->
+        <!--/>-->
 
-        android:layout_height = "fill_parent"
-        android:layout_width  = "wrap_content"
-
-        android:layout_alignParentLeft = "true"
-
-        android:layout_marginRight = "@dimen/iconBuffer"
+    <TextView
+        android:id = "@+id/groupName"
+        android:layout_height = "wrap_content"
+        android:layout_width = "wrap_content"
+        android:layout_alignParentTop = "true"
+        android:textSize = "20sp"
         />
 
     <TextView
         android:id = "@+id/groupNotification"
-
         android:layout_height = "wrap_content"
         android:layout_width = "wrap_content"
-
-        android:layout_alignParentTop = "true"
-        android:layout_toRightOf="@id/groupIcon"
-
-        android:textSize = "12sp"
+        android:layout_below = "@id/groupName"
+        android:textSize="16sp"
+        android:layout_marginLeft="16dp"
         />
 
     <TextView
-        android:id = "@+id/groupName"
-
-        android:layout_height = "wrap_content"
-        android:layout_width = "wrap_content"
-
-        android:layout_below = "@id/groupNotification"
-        android:layout_alignRight = "@id/groupNotification"/>
-
-    <TextView
         android:id = "@+id/groupUpdate"
-
         android:layout_height = "wrap_content"
         android:layout_width = "wrap_content"
-
         android:layout_alignParentBottom = "true"
         android:layout_alignParentRight = "true"/>
 
