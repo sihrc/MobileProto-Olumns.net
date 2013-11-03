@@ -68,6 +68,7 @@ public class DBHandler {
         ContentValues values = new ContentValues();
         //Unpacking Post information to holder
         values.put(DatabaseModel.POST_POSTER, newPost.poster);
+        values.put(DatabaseModel.POST_GROUP, newPost.groups);
         values.put(DatabaseModel.POST_SUBJECT, newPost.subject);
         values.put(DatabaseModel.POST_MESSAGE, newPost.message);
         values.put(DatabaseModel.POST_DATE, newPost.date);
