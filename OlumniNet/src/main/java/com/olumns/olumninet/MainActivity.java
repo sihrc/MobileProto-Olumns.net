@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -89,6 +90,20 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    //Setup Options Menu
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action1:
+                addGroup();
+                break;
+            case R.id.action2:
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
     //Olin Network Credentials Authentication
     public void authenticate(){
         new AsyncTask<Void, Void, String>() {
@@ -161,6 +176,7 @@ public class MainActivity extends Activity {
         for (String setGroup : setGroups){
             String[] parts = setGroup.split("$");
             groups.add(parts[0]);
+            Log.i("Groups",parts[0]);
         }
         return groups;
     }
