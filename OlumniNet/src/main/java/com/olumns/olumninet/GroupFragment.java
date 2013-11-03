@@ -1,6 +1,5 @@
 package com.olumns.olumninet;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -25,8 +24,6 @@ import com.teamolumn.olumninet.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.zip.Inflater;
 
 
 /**
@@ -41,6 +38,7 @@ public class GroupFragment extends Fragment{
     GroupListAdapter groupListAdapter;
     ListView groupList;
     ArrayList<Group> groups = new ArrayList<Group>();
+
     //Notifications
     HashMap<String, Integer> notifications = new HashMap<String, Integer>();
 
@@ -104,12 +102,14 @@ public class GroupFragment extends Fragment{
     //Update the notifications
     public void getLocalNotificationsHash(){
         this.db.open();
-        String[] setGroups =  activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "").split("#,");
-
-        for (String setGroup : setGroups){
-            String[] parts = setGroup.split("\\$");
-            if (!this.notifications.containsKey(parts[0])){
-                this.notifications.put(parts[0], Integer.parseInt(parts[1]));
+        String raw =  activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
+        if (!raw.equals("")){
+            Log.i ("GROUPRAW",raw);
+            for (String setGroup : raw.split("#,")){
+                String[] parts = setGroup.split("\\$");
+                if (!this.notifications.containsKey(parts[0])){
+                    this.notifications.put(parts[0], Integer.parseInt(parts[1]));
+                }
             }
         }
     }
@@ -163,7 +163,7 @@ public class GroupFragment extends Fragment{
                                     .edit()
                                     .putString("groupsInfo", activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
                                     .commit();
-                            Log.i ("LET'S SEE WHAT'S COOKING",newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,");
+                            Log.i("LET'S SEE WHAT'S COOKING", newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,");
                         }
                         refreshListView();
                     }
@@ -178,23 +178,23 @@ public class GroupFragment extends Fragment{
     //Create Options Menu
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.group_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     //Setup Options Menu
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action1:
+            case R.id.action1: //Add Group
                 addGroup();
                 break;
-            case R.id.action2:
-                break;
-            case R.id.remove_group:
+            case R.id.action2: //Remove Group
                 final Dialog dialog = new Dialog(activity);
                 dialog.setContentView(R.layout.delgroup_list);
                 dialog.setTitle("Remove Group");
                 ListView listView = (ListView) dialog.findViewById(R.id.list);
+
+                activity.getGroupNames();
 
                 ArrayAdapter<String> ad = new ArrayAdapter<String>(activity, R.layout.delgroup_list_item, R.id.singleItem, activity.groupNames);
                 listView.setAdapter(ad);
@@ -203,11 +203,15 @@ public class GroupFragment extends Fragment{
                     @Override
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                         //do something on click
+                        activity.getGroupNames();
                         activity.removeGroupFromServer(activity.groupNames.get(arg2));
+                        activity.removeGroup(activity.groupNames.get(arg2));
+                        refreshListView();
+                        dialog.dismiss();
                     }
                 });
                 dialog.show();
-                return true;
+                break;
             default:
                 break;
         }

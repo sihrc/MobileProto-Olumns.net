@@ -10,13 +10,10 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center_vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
         android:textStyle="bold"
-        android:textSize="22dp"
-        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textColor="@android:color/holo_blue_dark"
         android:padding="10dp"
-        android:text="blue thingy"
-        android:background="#336699" />
+        android:background="#FFFFFF" />
 
 </LinearLayout>
