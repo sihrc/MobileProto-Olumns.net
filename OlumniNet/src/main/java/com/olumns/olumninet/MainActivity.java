@@ -267,7 +267,7 @@ public class MainActivity extends Activity {
     }
 
     //Add a group to the server
-    public void addGroupToServer(String group){
+    public void addGroupToServer(final String group){
         new AsyncTask<Void, Void, String>() {
             HttpClient client = new DefaultHttpClient();
             HttpResponse response;
@@ -283,14 +283,8 @@ public class MainActivity extends Activity {
                     String website = "http://olumni-server.heroku.com/" + fullName + "/groups";
                     HttpPost createSessions = new HttpPost(website);
 
-                    ArrayList<String> groupArray = getGroupNames();
-
-                    String groupsString = makeStringFromArrayList(getGroupNames());
-                    String postIDString = makeStringFromArrayList(db.getAllPostIds());
-
                     JSONObject json = new JSONObject();
-                    json.put("postIDs", postIDString);
-                    json.put("groups",groupsString);
+                    json.put("group",group);
 
                     StringEntity se = new StringEntity(json.toString());
                     Log.i("JSON ENTITY",se.toString());
@@ -315,66 +309,6 @@ public class MainActivity extends Activity {
                 }catch (Exception e){e.printStackTrace();}
 
                 return result;
-            }
-
-            protected void onPostExecute(String result){
-                DBHandler db = new DBHandler(getApplicationContext());
-                db.open();
-
-                if (result != null && !result.isEmpty()) {
-                    if (!result.equals("")){
-                        JSONArray jArray = new JSONArray();
-                        // ArrayList tweets = new ArrayList();
-                        JSONObject jsonObj = null;
-                        try{
-                            jsonObj = new JSONObject(result);
-                        }catch (JSONException e){
-                            Log.i("jsonParse", "error converting string to json object");
-                        }
-                        try {
-                            jArray = jsonObj.getJSONArray("posts");
-                        } catch(JSONException e) {
-                            e.printStackTrace();
-                            Log.i("jsonParse", "error converting to json array");
-                        }
-                        for (int i=0; i < jArray.length(); i++)
-                            try {
-                                JSONObject postObject = jArray.getJSONObject(i);
-                                JSONArray viewerArray = postObject.getJSONArray("viewers");
-                                StringBuilder viewerString = new StringBuilder();
-                                for (int j=0; j < viewerArray.length(); j++) {
-                                    viewerString.append(viewerArray.getString(j));
-                                    if (viewerString.length() > 0 &&  j != viewerArray.length()-1) {
-                                        viewerString.append("#");
-                                    }
-
-                                }
-
-                                // Pulling items from the array
-                                String group = postObject.getString("group");
-                                String parent = postObject.getString("parent");
-                                String userName = postObject.getString("username");
-                                String date = postObject.getString("date");
-                                String lastDate = postObject.getString("lastDate");
-                                String message = postObject.getString("message");
-                                String resolved = postObject.getString("resolved");
-                                String reply = postObject.getString("reply");
-                                String subject = postObject.getString("subject");
-                                String id = postObject.getString("_id");
-                                String viewers = viewerString.toString();
-
-
-                                Post post = new Post(userName, group, subject, message, date, parent, resolved);
-                                post.setId(id);
-                                post.setLastDate(lastDate);
-                                db.addPost(post);
-
-                            } catch (JSONException e) {
-                                Log.i("jsonParse", "error in iterating");
-                            }
-                    }
-
-                } else {Log.i("jsonParse", "result is null");}
             }
         }.execute();finish();
     }
