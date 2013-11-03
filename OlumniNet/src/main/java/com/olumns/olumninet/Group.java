@@ -12,4 +12,8 @@ public class Group {
         this.groupName = groupName;
         this.notification = notification;
     }
+
+    public void setNotification (Integer value){
+        this.notification = value;
+    }
 }

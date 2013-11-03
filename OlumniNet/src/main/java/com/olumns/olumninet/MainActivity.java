@@ -89,46 +89,6 @@ public class MainActivity extends Activity {
         //Synchronize with Server
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    //Setup Options Menu
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action1:
-                addGroup();
-                break;
-            case R.id.action2:
-                break;
-            case R.id.remove_group:
-                final Dialog dialog = new Dialog(MainActivity.this);
-                dialog.setContentView(R.layout.delgroup_list);
-                dialog.setTitle("Remove Group");
-                ListView listView = (ListView) dialog.findViewById(R.id.list);
-
-                ArrayAdapter<String> ad = new ArrayAdapter<String>(this, R.layout.delgroup_list_item, R.id.singleItem, groupNames);
-                listView.setAdapter(ad);
-
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                        //do something on click
-                        removeGroupFromServer(groupNames.get(arg2));
-                    }
-                });
-                dialog.show();
-                return true;
-            default:
-                break;
-        }
-        return true;
-    }
-
-
     //Olin Network Credentials Authentication
     public void authenticate(){
         new AsyncTask<Void, Void, String>() {
@@ -197,9 +157,9 @@ public class MainActivity extends Activity {
     //Get Group Names
     public void getGroupNames () {
         groupNames = new ArrayList<String>();
-        String[] setGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "NULL").split("#,");
+        String[] setGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "").split("#,");
         for (String setGroup : setGroups){
-            String[] parts = setGroup.split("$");
+            String[] parts = setGroup.split("\\$");
             groupNames.add(parts[0]);
             Log.i("Groups", parts[0]);
         }
@@ -207,7 +167,6 @@ public class MainActivity extends Activity {
 
     //Do this on first run
     public void onFirstRun(){
-        if (!groupsExist()) addGroup();
         if (!fullNameExists()) userLogin();
     }
 
@@ -253,60 +212,6 @@ public class MainActivity extends Activity {
         //Get User Login
         MainActivity.this.username = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("username","");
         MainActivity.this.password = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("password","");
-    }
-
-    //Add Group
-    public void addGroup(){
-        db.open();
-        //Preset Groups for now, should get from server
-        final ArrayList <String> databaseGroups = new ArrayList<String>(){};
-        databaseGroups.add("Helpme");
-        databaseGroups.add("CarpeDiem");
-        databaseGroups.add("Randomness");
-
-        //Single Course Input
-        final AutoCompleteTextView groupList = new AutoCompleteTextView(MainActivity.this);
-        groupList.setThreshold(0);
-        groupList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                groupList.showDropDown();
-            }
-        });
-        groupList.setAdapter(new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_dropdown_item_1line, databaseGroups));
-
-        new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Add A Course")
-                .setMessage("Choose from the existing list, or create a new course")
-                .setView(groupList)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        String newGroup = groupList.getText().toString();
-                        if (newGroup.length() < 1) {
-                            Toast.makeText(MainActivity.this, "Give the course a name!", Toast.LENGTH_LONG).show();
-                            dialog.dismiss();
-                        }
-
-                        //Add course to server, if it doesn't exist on the server
-                        if (!databaseGroups.contains(newGroup))
-                            addGroupToServer(newGroup);
-
-                        //Save to preference
-                        getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                                .edit()
-                                .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
-                                .commit();
-                        HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
-                        names.add(newGroup);
-                        MainActivity.this.groupNames = new ArrayList<String>(names);
-                        Log.i ("LET'S SEE WHAT'S COOKING",newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,");
-                    }
-                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Do nothing.
-            }
-        })
-           .show();
     }
 
     //Add a group to the server
@@ -356,7 +261,7 @@ public class MainActivity extends Activity {
         }.execute();finish();
     }
 
-    private void removeGroup(String removeGroup) {
+    public void removeGroup(String removeGroup) {
         StringBuilder newGroupsInfo = new StringBuilder();
         for (String groupSet:getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "").split("#,")){
             String[] parts = groupSet.split("$");
@@ -375,7 +280,7 @@ public class MainActivity extends Activity {
         MainActivity.this.groupNames = new ArrayList<String>(names);
     }
 
-    private void removeGroupFromServer(final String group) {
+    public void removeGroupFromServer(final String group) {
         new AsyncTask<Void, Void, String>() {
             HttpClient client = new DefaultHttpClient();
             HttpResponse response;
