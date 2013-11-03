@@ -274,7 +274,7 @@ public class ThreadFragment extends Fragment {
                 sb.append(parts[0]);
                 sb.append("$");
                 if (group.equals(parts[0]))
-                    sb.append(db.getThreadsByGroup(group));
+                    sb.append(db.getThreadsByGroup(group).size());
                 else
                     sb.append(parts[1]);
                 sb.append("#,");
