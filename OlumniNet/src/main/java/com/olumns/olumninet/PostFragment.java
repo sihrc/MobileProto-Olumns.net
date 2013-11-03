@@ -183,7 +183,7 @@ public class PostFragment extends Fragment {
 
                     JSONObject json = new JSONObject();
                     json.put("group",post.groups);
-                    json.put("parentItem",post.parent);
+                    json.put("parentItem", post.parent);
                     json.put("username",post.poster);
                     json.put("date",post.date);
                     /*json.put("lastDate",post.lastDate);*/

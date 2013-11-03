@@ -146,7 +146,7 @@ public class ThreadFragment extends Fragment {
                             dialog.dismiss();
                         }
 
-                        Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), "None", "Unresolved", activity.curGroup + "&");
+                        Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), curGroup, "Unresolved", activity.curGroup + "&");
 
 
                         //Add post to server

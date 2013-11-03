@@ -445,10 +445,6 @@ public class MainActivity extends Activity {
                     json.put("groups",groupsString);
                     json.put("username",MainActivity.this.fullName);
 
-                    Log.i("DEBUG ID", postIDString);
-                    Log.i("DEBUG FULLNAME", MainActivity.this.fullName);
-                    Log.i("DEBUG GROUPS", groupsString);
-
                     StringEntity se = new StringEntity(json.toString());
                     se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
                     createSessions.setEntity(se);
@@ -467,7 +463,7 @@ public class MainActivity extends Activity {
                         sb.append(line + nl);
                     }
                     result = sb.toString();
-                    Log.i("RESULT FROM SERVER", result);
+                    //Log.i("RESULT FROM SERVER", result);
                 }catch (Exception e){e.printStackTrace();}
 
                 return result;
