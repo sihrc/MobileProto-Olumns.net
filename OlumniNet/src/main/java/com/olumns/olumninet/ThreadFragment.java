@@ -267,7 +267,7 @@ public class ThreadFragment extends Fragment {
     public void updateNotificationsForGroup(String group){
         String raw = activity.getSharedPreferences("PREFERENCE",activity.MODE_PRIVATE).getString("groupsInfo","");
         StringBuilder sb = new StringBuilder();
-
+        Log.i("THREADRAW", raw);
         if (!raw.equals("")){
             for (String setGroup : raw.split("#,")){
                 String[] parts = setGroup.split("\\$");

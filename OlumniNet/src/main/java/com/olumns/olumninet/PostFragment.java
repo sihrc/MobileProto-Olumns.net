@@ -114,6 +114,7 @@ public class PostFragment extends Fragment {
 
                         Post newPost = new Post(activity.fullName, curPost.groups, curPost.subject, message, String.valueOf(System.currentTimeMillis()), curPost.id, "false",curPost.groups + "&"); //HERE WE CAN CHANGE PRIVATE OR PUBLIC BY EDITING VIEWERS
 
+                        Log.i ("PARENT", curPost.id);
                         //Add post to server
                         db.addPost(newPost);
 
