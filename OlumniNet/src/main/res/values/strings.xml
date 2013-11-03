@@ -6,7 +6,7 @@
 
     <string name="tab1">Groups</string>
     <string name="tab2">Events</string>
-    <string name="tab3">Profiles</string>
+    <string name="tab3">My Posts</string>
 
     <string name="signin_main">Your Network Credentials</string>
     <string name="signin_user">Username</string>

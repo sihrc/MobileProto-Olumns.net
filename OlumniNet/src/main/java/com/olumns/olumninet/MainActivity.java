@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
         //Group Fragment
         GroupFragment listsFragment = new GroupFragment();
         EventsFragment eventsFragment = new EventsFragment();
-        ProfileFragment profileFragment = new ProfileFragment();
+        MyPostsFragment myPostsFragment = new MyPostsFragment();
 
         //Lists Fragment
         ActionBar.Tab listsTab = actionBar.newTab().setText(R.string.tab1);
@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
 
         //Profile Fragment
         ActionBar.Tab profileTab = actionBar.newTab().setText(R.string.tab3);
-        profileTab.setTabListener(new NavTabListener(profileFragment));
+        profileTab.setTabListener(new NavTabListener(myPostsFragment));
 
         //Adding the different fragments
         actionBar.addTab(listsTab);
