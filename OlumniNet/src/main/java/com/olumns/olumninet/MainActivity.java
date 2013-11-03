@@ -82,16 +82,16 @@ public class MainActivity extends Activity {
         onFirstRun();
 
         //Sync with Server
-        /*Timer timer = new Timer();
+        db.open();
+        Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
+                getGroupNames();
+                if (groupsExist() && fullNameExists())
                 updateLocalDatabase();
             }
-        },0,1000);*/
-        db.open();
-        updateLocalDatabase();
-        //Synchronize with Server
+        },0,1000);
     }
 
     //Olin Network Credentials Authentication
@@ -150,7 +150,7 @@ public class MainActivity extends Activity {
             protected void onPostExecute(String fullName){
                 MainActivity.this.fullName = fullName;
                 //WE NEED TO REMOVE THIS
-                MainActivity.this.fullName = "CHRIS.LEE";
+                MainActivity.this.fullName = "CHRISLEE";
                 //WE NEED TO REMOVE THIS
                 //Save FullName
                 getSharedPreferences("PREFERENCE", MODE_PRIVATE)
@@ -430,20 +430,26 @@ public class MainActivity extends Activity {
 
             protected String doInBackground(Void... voids) {
                 try {
-                    String website = "http://olumni-server.herokuapp.com/" + fullName + "/getMissingPosts";
+                    String website = "http://olumni-server.herokuapp.com/" + MainActivity.this.fullName + "/getMissingPosts";
                     HttpPost createSessions = new HttpPost(website);
 
                     getGroupNames();
                     String groupsString = makeStringFromArrayList(MainActivity.this.groupNames);
-                    String postIDString = makeStringFromArrayList(MainActivity.this.db.getAllPostIds());
+
+                    String postIDString;
+                    ArrayList<String> ids = MainActivity.this.db.getAllPostIds();
+                    if (ids.size() < 1) postIDString = "aaaaaaaaaaaa"; else postIDString = makeStringFromArrayList(ids);
 
                     JSONObject json = new JSONObject();
                     json.put("postIDs", postIDString);
                     json.put("groups",groupsString);
+                    json.put("username",MainActivity.this.fullName);
 
+                    Log.i("DEBUG ID", postIDString);
+                    Log.i("DEBUG FULLNAME", MainActivity.this.fullName);
+                    Log.i("DEBUG GROUPS", groupsString);
 
                     StringEntity se = new StringEntity(json.toString());
-                    Log.i("JSON ENTITY",se.toString());
                     se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
                     createSessions.setEntity(se);
 
@@ -461,7 +467,7 @@ public class MainActivity extends Activity {
                         sb.append(line + nl);
                     }
                     result = sb.toString();
-                    Log.i("RESULT PRINT FROM THING", result);
+                    Log.i("RESULT FROM SERVER", result);
                 }catch (Exception e){e.printStackTrace();}
 
                 return result;
@@ -495,7 +501,7 @@ public class MainActivity extends Activity {
                                         viewerString.append("#");
                                     }
                                 }
-                                Log.i ("DEBUG", "I GET HERE");
+
                                 // Pulling items from the array
                                 String group = postObject.getString("group");
                                 String parent = postObject.getString("parent");
@@ -508,18 +514,6 @@ public class MainActivity extends Activity {
                                 //String subject = postObject.getString("subject");
                                 String id = postObject.getString("_id");
                                 String viewers = viewerString.toString();
-
-                                Log.i("SYNC - group",group);
-                                Log.i("SYNC - parent",parent);
-                                Log.i("SYNC - userName",userName);
-                                Log.i("SYNC - date",date);
-                                Log.i("SYNC - lastDate",lastDate);
-                                Log.i("SYNC - message",message);
-                                Log.i("SYNC - resolved",resolved);
-                                Log.i("SYNC - reply",reply);
-                                //Log.i("SYNC - subject",subject);
-                                Log.i("SYNC - id",id);
-                                Log.i("SYNC - viewers",viewers);
 
                                 Post post = new Post(userName, group, "", message, date, parent, resolved, viewers);
                                 post.setId(id);
@@ -541,8 +535,6 @@ public class MainActivity extends Activity {
         int i = 0;
         for (String s : array) {
             sb.append(s);
-            System.out.println(i);
-            System.out.println(array.size());
             if (sb.length() > 0 && i != array.size()-1) {
                 sb.append("&");
                 i++;
