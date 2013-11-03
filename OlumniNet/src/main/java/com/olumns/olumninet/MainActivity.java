@@ -264,16 +264,17 @@ public class MainActivity extends Activity {
     public void removeGroup(String removeGroup) {
         StringBuilder newGroupsInfo = new StringBuilder();
         String raw = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "");
+        Log.i ("RAW IN REMOVE", raw);
         if (!raw.equals("")){
             for (String groupSet:raw.split("#,")){
                 String[] parts = groupSet.split("\\$");
                 if (!parts[0].equals(removeGroup)){
                     newGroupsInfo.append(parts[0]);
                     newGroupsInfo.append("$");
-                    newGroupsInfo.append(parts[1]);}
-                    newGroupsInfo.append("#,");
+                    newGroupsInfo.append(parts[1]);
+                    newGroupsInfo.append("#,");}
                 }
-
+            Log.i ("RAW IN REMOVE2", newGroupsInfo.toString());
             getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                     .edit()
                     .putString("groupsInfo",newGroupsInfo.toString())
