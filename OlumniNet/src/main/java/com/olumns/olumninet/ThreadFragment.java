@@ -112,6 +112,8 @@ public class ThreadFragment extends Fragment {
                         Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), null, "Unresolved");
 
                         //Add post to server
+                        db = new DBHandler(activity);
+                        db.open();
                         db.addPost(newPost);
 
                         refreshListView();
