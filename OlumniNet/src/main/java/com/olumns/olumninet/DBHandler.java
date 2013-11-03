@@ -97,7 +97,7 @@ public class DBHandler {
 
     //Get Information on the Children from Parent Thread
     public Post getThreadInfo(Post parent){
-        Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_DATE}, DatabaseModel.POST_PARENT + " like '%" + parent + "%'", null, null, null, DatabaseModel.POST_DATE);
+        Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_DATE}, DatabaseModel.POST_PARENT + " like '%" + parent.parent + "%'", null, null, null, DatabaseModel.POST_DATE);
         parent.setNumChild(String.valueOf(cursor.getCount()));
         cursor.moveToLast();
         parent.setLastDate(cursor.getString(0));
