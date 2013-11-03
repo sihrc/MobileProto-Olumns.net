@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -35,9 +36,11 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by chris on 10/27/13.
@@ -45,6 +48,7 @@ import java.util.List;
 public class MainActivity extends Activity {
     public String fullName, username, password, curGroup;
     public Post curPost;
+    public ArrayList<String> groupNames;
     public DBHandler db = new DBHandler(this);
 
     @Override
@@ -90,6 +94,20 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    //Setup Options Menu
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action1:
+                addGroup();
+                break;
+            case R.id.action2:
+                break;
+            default:
+                break;
+        }
         return true;
     }
 
@@ -159,14 +177,14 @@ public class MainActivity extends Activity {
     }
 
     //Get Group Names
-    public ArrayList<String> getGroupNames () {
-        ArrayList<String> groups = new ArrayList<String>();
-        String[] setGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("notifications", "NULL").split("#,");
+    public void getGroupNames () {
+        groupNames = new ArrayList<String>();
+        String[] setGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "NULL").split("#,");
         for (String setGroup : setGroups){
             String[] parts = setGroup.split("$");
-            groups.add(parts[0]);
+            groupNames.add(parts[0]);
+            Log.i("Groups", parts[0]);
         }
-        return groups;
     }
 
     //Do this on first run
@@ -231,7 +249,6 @@ public class MainActivity extends Activity {
         //Single Course Input
         final AutoCompleteTextView groupList = new AutoCompleteTextView(MainActivity.this);
         groupList.setThreshold(0);
-        //groupList.setDropDownHeight(2);
         groupList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -261,6 +278,10 @@ public class MainActivity extends Activity {
                                 .edit()
                                 .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
                                 .commit();
+                        HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
+                        names.add(newGroup);
+                        MainActivity.this.groupNames = new ArrayList<String>(names);
+                        Log.i ("LET'S SEE WHAT'S COOKING",newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,");
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -271,8 +292,50 @@ public class MainActivity extends Activity {
     }
 
     //Add a group to the server
-    public void addGroupToServer(String group){
+    public void addGroupToServer(final String group){
+        new AsyncTask<Void, Void, String>() {
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response;
 
+
+            @Override
+            protected void onPreExecute() {
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+
+            protected String doInBackground(Void... voids) {
+                try {
+                    String website = "http://olumni-server.heroku.com/" + fullName + "/groups";
+                    HttpPost createSessions = new HttpPost(website);
+
+                    JSONObject json = new JSONObject();
+                    json.put("group",group);
+
+                    StringEntity se = new StringEntity(json.toString());
+                    Log.i("JSON ENTITY",se.toString());
+                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                    createSessions.setEntity(se);
+
+                    response = client.execute(createSessions);
+                }
+                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
+                String result = "";
+                try{
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder();
+
+                    String line;
+                    String nl = System.getProperty("line.separator");
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line + nl);
+                    }
+                    result = sb.toString();
+                    Log.i("RESULT PRINT FROM THING", result);
+                }catch (Exception e){e.printStackTrace();}
+
+                return result;
+            }
+        }.execute();finish();
     }
 
     //Get Groups from the server
@@ -340,6 +403,7 @@ public class MainActivity extends Activity {
         }.execute();
     }
 
+    //Check if Groups Exist
     public boolean groupsExist(){
         String groups = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("groupsInfo","");
         return !groups.equals("");
@@ -361,10 +425,9 @@ public class MainActivity extends Activity {
                     String website = "http://olumni-server.heroku.com/" + fullName + "/getMissingPosts";
                     HttpPost createSessions = new HttpPost(website);
 
-                    ArrayList<String> groupArray = getGroupNames();
-
-                    String groupsString = makeStringFromArraylist(getGroupNames());
-                    String postIDString = makeStringFromArraylist(db.getAllPostIds());
+                    getGroupNames();
+                    String groupsString = makeStringFromArrayList(MainActivity.this.groupNames);
+                    String postIDString = makeStringFromArrayList(db.getAllPostIds());
 
                     JSONObject json = new JSONObject();
                     json.put("postIDs", postIDString);
@@ -458,7 +521,7 @@ public class MainActivity extends Activity {
         }.execute();finish();
     }
 
-    public String makeStringFromArraylist(ArrayList<String> array) {
+    public String makeStringFromArrayList(ArrayList<String> array) {
         StringBuilder sb = new StringBuilder();
         int i = 0;
         for (String s : array) {
