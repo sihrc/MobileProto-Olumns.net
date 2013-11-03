@@ -3,6 +3,7 @@ package com.olumns.olumninet;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -11,9 +12,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.teamolumn.olumninet.R;
@@ -36,6 +39,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -105,11 +109,30 @@ public class MainActivity extends Activity {
                 break;
             case R.id.action2:
                 break;
+            case R.id.remove_group:
+                final Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.delGroup_list);
+                dialog.setTitle("Remove Group");
+                ListView listView = (ListView) dialog.findViewById(R.id.list);
+
+                ArrayAdapter<String> ad = new ArrayAdapter<String>(this, R.layout.delGroup_list_item , R.id.singleItem, groupNames);
+                listView.setAdapter(ad);
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                        //do something on click
+                        removeGroupFromServer(groupNames.get(arg2));
+                    }
+                });
+                dialog.show();
+                return true;
             default:
                 break;
         }
         return true;
     }
+
 
     //Olin Network Credentials Authentication
     public void authenticate(){
@@ -305,7 +328,7 @@ public class MainActivity extends Activity {
 
             protected String doInBackground(Void... voids) {
                 try {
-                    String website = "http://olumni-server.heroku.com/" + fullName + "/groups";
+                    String website = "http://olumni-server.heroku.com/" + fullName + "/group";
                     HttpPost createSessions = new HttpPost(website);
 
                     JSONObject json = new JSONObject();
@@ -334,6 +357,85 @@ public class MainActivity extends Activity {
                 }catch (Exception e){e.printStackTrace();}
 
                 return result;
+            }
+        }.execute();finish();
+    }
+
+    private void removeGroup(String removeGroup) {
+        String currentGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "");
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                .edit()
+                .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
+                .commit();
+        HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
+        names.remove(removeGroup);
+        MainActivity.this.groupNames = new ArrayList<String>(names);
+    }
+
+    private void removeGroupFromServer(final String group) {
+        new AsyncTask<Void, Void, String>() {
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+
+
+            @Override
+            protected void onPreExecute() {
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+
+            protected String doInBackground(Void... voids) {
+                try {
+                    String website = "http://olumni-server.heroku.com/" + fullName + "/delGroup";
+                    HttpPost createSessions = new HttpPost(website);
+
+                    JSONObject json = new JSONObject();
+                    json.put("group",group);
+
+                    StringEntity se = new StringEntity(json.toString());
+                    Log.i("JSON ENTITY",se.toString());
+                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                    createSessions.setEntity(se);
+
+                    response = client.execute(createSessions);
+                }
+                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
+                String result = "";
+                try{
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder();
+
+                    String line;
+                    String nl = System.getProperty("line.separator");
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line + nl);
+                    }
+                    result = sb.toString();
+                    Log.i("RESULT PRINT FROM THING", result);
+                }catch (Exception e){e.printStackTrace();}
+
+                return result;
+            }
+
+            protected void onPostExecute(String result){
+                if (result != null && !result.isEmpty()) {
+                    JSONObject jsonObj = null;
+                    String error = null;
+                    if (!result.equals("")){
+                        try{
+                            jsonObj = new JSONObject(result);
+                        }catch (JSONException e){
+                            Log.i("jsonParse", "error converting string to json object");
+                        }
+                        try {
+                            error = jsonObj.getString("error");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (error.equals("false")) {
+                        removeGroup(group);
+                    }
+                }
             }
         }.execute();finish();
     }
