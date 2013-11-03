@@ -63,8 +63,8 @@ public class GroupFragment extends Fragment{
         super.onResume();
         db = new DBHandler(activity);
         db.open();
-        Log.i("CurGroups",activity.getGroupNames().toString());
-        groupListAdapter = new GroupListAdapter(activity, getGroupsFromNames(activity.getGroupNames()));
+        Log.i("CurGroups",this.notifications.keySet().toString());
+        groupListAdapter = new GroupListAdapter(activity, getGroupsFromNames(new ArrayList<String>(this.notifications.keySet())));
         groupListAdapter.notifyDataSetChanged();
     }
 
