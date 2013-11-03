@@ -14,6 +14,7 @@ public class DatabaseModel extends SQLiteOpenHelper {
     public static final String POST_POSTER  = "poster";
     public static final String POST_GROUP  = "listgroup";
     public static final String POST_SUBJECT  = "subject";
+    public static final String POST_VIEWERS = "viewers";
     public static final String POST_MESSAGE  = "message";
     public static final String POST_DATE  = "date";
     public static final String POST_PARENT = "parent";
@@ -34,6 +35,7 @@ public class DatabaseModel extends SQLiteOpenHelper {
             + POST_DATE + " TEXT NOT NULL, "
             + POST_PARENT + " TEXT NOT NULL, "
             + POST_STATUS + " TEXT NOT NULL, "
+            + POST_VIEWERS + " TEXT NOT NULL, "
             + POST_ID + " TEXT NOT NULL);";
 
     //Default Constructor

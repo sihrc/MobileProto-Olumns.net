@@ -24,6 +24,7 @@ public class DBHandler {
             DatabaseModel.POST_DATE,
             DatabaseModel.POST_PARENT,
             DatabaseModel.POST_STATUS,
+            DatabaseModel.POST_VIEWERS,
             DatabaseModel.POST_ID
     };
 
@@ -74,10 +75,11 @@ public class DBHandler {
         values.put(DatabaseModel.POST_DATE, newPost.date);
         values.put(DatabaseModel.POST_PARENT, newPost.parent);
         values.put(DatabaseModel.POST_STATUS, newPost.status);
-        //values.put(DatabaseModel.POST_ID, newPost.id);
+        values.put(DatabaseModel.POST_ID, newPost.id);
+        values.put(DatabaseModel.POST_VIEWERS, newPost.viewers);
 
         //Eventually this needs to be from the server!!!!
-        values.put(DatabaseModel.POST_ID, 999);
+        /*values.put(DatabaseModel.POST_ID, 999);*/
 
         //Inserting into database
         this.database.insert(DatabaseModel.TABLE_NAME, null, values);
@@ -154,7 +156,8 @@ public class DBHandler {
             cursor.getString(3),
             cursor.getString(4),
             cursor.getString(5),
-            cursor.getString(6)
+            cursor.getString(6),
+            cursor.getString(7)
         );
     }
 }

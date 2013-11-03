@@ -3,20 +3,13 @@ package com.olumns.olumninet;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.teamolumn.olumninet.R;
@@ -45,7 +38,7 @@ import java.util.HashSet;
  * Created by chris on 10/27/13.
  */
 public class MainActivity extends Activity {
-    public String fullName, username, password, curGroup;
+    public String fullName, username, password, curGroup, id;
     public Post curPost;
     public ArrayList<String> groupNames = new ArrayList<String>();
     public DBHandler db = new DBHandler(this);
@@ -261,6 +254,7 @@ public class MainActivity extends Activity {
         }.execute();
     }
 
+    //Remove a group from local
     public void removeGroup(String removeGroup) {
         StringBuilder newGroupsInfo = new StringBuilder();
         String raw = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "");
@@ -285,6 +279,7 @@ public class MainActivity extends Activity {
         }
     }
 
+    //Remove Group from Server
     public void removeGroupFromServer(final String group) {
         new AsyncTask<Void, Void, String>() {
             HttpClient client = new DefaultHttpClient();
@@ -298,7 +293,7 @@ public class MainActivity extends Activity {
 
             protected String doInBackground(Void... voids) {
                 try {
-                    String website = "http://olumni-server.heroku.com/" + fullName + "/delGroup";
+                    String website = "http://olumni-server.herokuapp.com/" + fullName + "/delGroup";
                     HttpPost createSessions = new HttpPost(website);
 
                     JSONObject json = new JSONObject();
@@ -420,7 +415,7 @@ public class MainActivity extends Activity {
 
             protected String doInBackground(Void... voids) {
                 try {
-                    String website = "http://olumni-server.heroku.com/" + fullName + "/getMissingPosts";
+                    String website = "http://olumni-server.herokuapp.com/" + fullName + "/getMissingPosts";
                     HttpPost createSessions = new HttpPost(website);
 
                     getGroupNames();
@@ -504,7 +499,7 @@ public class MainActivity extends Activity {
                                 String viewers = viewerString.toString();
 
 
-                                Post post = new Post(userName, group, subject, message, date, parent, resolved);
+                                Post post = new Post(userName, group, subject, message, date, parent, resolved, viewers);
                                 post.setId(id);
                                 post.setLastDate(lastDate);
                                 db.addPost(post);

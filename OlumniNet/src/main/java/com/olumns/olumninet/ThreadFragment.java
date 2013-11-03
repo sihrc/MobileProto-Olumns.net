@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,19 @@ import android.widget.Toast;
 
 import com.teamolumn.olumninet.R;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -43,12 +57,12 @@ public class ThreadFragment extends Fragment {
     public void onAttach(Activity activity){
         super.onAttach(activity);
         this.activity = (MainActivity) activity;
-        this.curGroup = this.activity.curGroup;
     }
 
     //On Fragment Creation
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.curGroup = this.activity.curGroup;
         try {
             ActionBar actionbar = (ActionBar) getActivity().getActionBar();
             actionbar.selectTab(null);
@@ -114,12 +128,10 @@ public class ThreadFragment extends Fragment {
                             dialog.dismiss();
                         }
 
-                        Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), "None", "Unresolved");
+                        Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), "None", "Unresolved", activity.curGroup + "&");
 
                         //Add post to server
-                        db.addPost(newPost);
-
-                        refreshListView();
+                        addThreadToServer(newPost);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -134,6 +146,75 @@ public class ThreadFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.group_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    //Add a Post to the Server
+    public void addThreadToServer(final Post post){
+        new AsyncTask<Void, String, String>() {
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+
+            @Override
+            protected void onPreExecute() {
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+
+            protected String doInBackground(Void... voids) {
+                try {
+                    String website = "http://olumni-server.herokuapp.com/" + "createPost";
+                    HttpPost createSessions = new HttpPost(website);
+
+                    JSONObject json = new JSONObject();
+                    json.put("group",post.groups);
+                    json.put("parent",post.parent);
+                    json.put("username",post.poster);
+                    json.put("date",post.date);
+                    /*json.put("lastDate",post.lastDate);*/
+                    json.put("message",post.message);
+                    json.put("viewers", "public");
+                    json.put("reply", false);
+
+                    StringEntity se = new StringEntity(json.toString());
+                    Log.i("JSON ENTITY",se.toString());
+                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                    createSessions.setEntity(se);
+
+                    response = client.execute(createSessions);
+                }
+                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
+                String result = "";
+                try{
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder();
+
+                    String line;
+                    String nl = System.getProperty("line.separator");
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line + nl);
+                    }
+                    result = sb.toString();
+                    Log.i("RESULT PRINT FROM THING", result);
+                }catch (Exception e){e.printStackTrace();}
+                //READ THE RESULT INTO A JSON OBJECT
+                try {
+                    JSONObject res = new JSONObject(result);
+                    if (res.getString("error").equals("true"))
+                        return res.getString("id");
+                    else
+                        return "ServerError";
+                } catch (JSONException e){e.printStackTrace();}
+                return "JSONServerError";
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                ThreadFragment.this.db.open();
+                post.setId(s);
+                ThreadFragment.this.db.addPost(post);
+                refreshListView();
+            }
+        }.execute();
     }
 
     //Setup Options Menu

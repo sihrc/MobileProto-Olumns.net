@@ -98,13 +98,17 @@ public class GroupFragment extends Fragment{
         this.db.open();
         String raw =  activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
         if (!raw.equals("")){
+            HashMap<String, Integer> newNotifications = new HashMap<String, Integer>();
             Log.i ("GROUPRAW",raw); //EDIT HERE
             for (String setGroup : raw.split("#,")){
                 String[] parts = setGroup.split("\\$");
                 if (!this.notifications.containsKey(parts[0])){
-                    this.notifications.put(parts[0], Integer.parseInt(parts[1]));
+                    newNotifications.put(parts[0], Integer.parseInt(parts[1]));
+                } else {
+                    newNotifications.put(parts[0],this.notifications.get(parts[0]));
                 }
             }
+            this.notifications = newNotifications;
         }
     }
 
