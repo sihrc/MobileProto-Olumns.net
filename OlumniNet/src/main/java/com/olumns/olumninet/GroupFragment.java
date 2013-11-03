@@ -48,9 +48,6 @@ public class GroupFragment extends Fragment{
 
         View v = inflater.inflate(R.layout.groups_fragment,null);
 
-        //Fake Data
-        ArrayList<Group> fakeGroups = new ArrayList<Group>();
-
         // Set up the ArrayAdapter for the Group List
         groupListAdapter = new GroupListAdapter(activity, new ArrayList<Group>());
         groupList = (ListView) v.findViewById(R.id.groupList);
@@ -79,9 +76,9 @@ public class GroupFragment extends Fragment{
 
     //Get Number of notifications
     public void getCurrentGroupNotifications(){
-        ArrayList<String> groupNames = new ArrayList<String>(Arrays.asList(activity.getSharedPreferences("PREFERENCE", Activity.MODE_PRIVATE).getString("groupsInfo", "NULL").split("#,")));
+        activity.getGroupNames();
         this.db.open();
-        for (String setName:groupNames){
+        for (String setName:activity.groupNames){
             String[] parts = setName.split("$");
             if (parts.length > 1)
                 this.notifications.put(parts[0],this.db.getPostIdByGroup(parts[0]).size() - Integer.parseInt(parts[1]));

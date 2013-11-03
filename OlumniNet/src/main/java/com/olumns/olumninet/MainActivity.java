@@ -35,6 +35,11 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Created by chris on 10/27/13.
@@ -42,6 +47,7 @@ import java.util.ArrayList;
 public class MainActivity extends Activity {
     public String fullName, username, password, curGroup;
     public Post curPost;
+    public ArrayList<String> groupNames;
     public DBHandler db = new DBHandler(this);
 
     @Override
@@ -170,15 +176,14 @@ public class MainActivity extends Activity {
     }
 
     //Get Group Names
-    public ArrayList<String> getGroupNames () {
-        ArrayList<String> groups = new ArrayList<String>();
-        String[] setGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("notifications", "NULL").split("#,");
+    public void getGroupNames () {
+        groupNames = new ArrayList<String>();
+        String[] setGroups = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "NULL").split("#,");
         for (String setGroup : setGroups){
             String[] parts = setGroup.split("$");
-            groups.add(parts[0]);
-            Log.i("Groups",parts[0]);
+            groupNames.add(parts[0]);
+            Log.i("Groups", parts[0]);
         }
-        return groups;
     }
 
     //Do this on first run
@@ -243,7 +248,6 @@ public class MainActivity extends Activity {
         //Single Course Input
         final AutoCompleteTextView groupList = new AutoCompleteTextView(MainActivity.this);
         groupList.setThreshold(0);
-        //groupList.setDropDownHeight(2);
         groupList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -273,6 +277,10 @@ public class MainActivity extends Activity {
                                 .edit()
                                 .putString("groupsInfo", getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
                                 .commit();
+                        HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
+                        names.add(newGroup);
+                        MainActivity.this.groupNames = new ArrayList<String>(names);
+                        Log.i ("LET'S SEE WHAT'S COOKING",newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,");
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -334,6 +342,7 @@ public class MainActivity extends Activity {
 
     }
 
+    //Check if Groups Exist
     public boolean groupsExist(){
         String groups = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("groupsInfo","");
         return !groups.equals("");
@@ -355,9 +364,8 @@ public class MainActivity extends Activity {
                     String website = "http://olumni-server.heroku.com/" + fullName + "/getMissingPosts";
                     HttpPost createSessions = new HttpPost(website);
 
-                    ArrayList<String> groupArray = getGroupNames();
-
-                    String groupsString = makeStringFromArrayList(getGroupNames());
+                    getGroupNames();
+                    String groupsString = makeStringFromArrayList(MainActivity.this.groupNames);
                     String postIDString = makeStringFromArrayList(db.getAllPostIds());
 
                     JSONObject json = new JSONObject();
