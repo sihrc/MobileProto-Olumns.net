@@ -48,7 +48,7 @@ public class EventsFragment extends Fragment {
     MainActivity activity;
     DBHandler db;
 
-    String curGroup;
+    String curGroup = "Events";
 
     //Views
     ThreadListAdapter threadListAdapter;
@@ -70,7 +70,6 @@ public class EventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.curGroup = this.activity.curGroup;
         View v = inflater.inflate(R.layout.threads_fragment,null);
         setHasOptionsMenu(true);
 
