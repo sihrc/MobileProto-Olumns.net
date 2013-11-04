@@ -57,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:id="@+id/thread_message"
-        android:layout_alignLeft = "@id/thread_message"
+        android:layout_alignLeft = "@id/thread_author"
         android:text="Message Message Message Message Message Message"
         android:textColor = "#393939"
         android:textSize="15sp"
