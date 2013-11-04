@@ -27,8 +27,12 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +57,7 @@ public class GroupFragment extends Fragment{
     ArrayList<Group> groups = new ArrayList<Group>();
 
     //Notifications
-    HashMap<String, Integer> notifications = new HashMap<String, Integer>();
+    ArrayList<String> notifications = new ArrayList<String>();
 
     //On Fragment Attachment to Parent Activity (only time that you have access to Activity)
     public void onAttach(Activity activity){
@@ -101,8 +105,9 @@ public class GroupFragment extends Fragment{
         db.open();
         getLocalNotificationsHash();
         this.groups = new ArrayList<Group>();
-        for (String group :this.notifications.keySet()){
-            this.groups.add(new Group(group,db.getPostIdByGroup(group).size() - this.notifications.get(group)));}
+        for (String groupSet :this.notifications){
+            String[] group = groupSet.split("\\$");
+            this.groups.add(new Group(group[0],db.getPostIdByGroup(group[0]).size() - Integer.parseInt(group[1])));}
     }
 
     //Update the notifications
@@ -111,10 +116,12 @@ public class GroupFragment extends Fragment{
         String raw =  activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
         if (!raw.equals("")){
             this.notifications.clear();
-            for (String setGroup : raw.split("#,")){
-                String[] parts = setGroup.split("\\$");
-                this.notifications.put(parts[0],Integer.parseInt(parts[1]));
+            for (String group : raw.split("#,")){
+                this.notifications.add(group);
             }
+        }
+        else{
+            this.notifications.clear();
         }
     }
 
@@ -153,11 +160,9 @@ public class GroupFragment extends Fragment{
                             Toast.makeText(activity, "Give the list a name!", Toast.LENGTH_LONG).show();
                         }
 
-                        //Add group to server
-                        activity.addGroupToServer(newGroup);
-
                         //Save to preference
-                        if (!GroupFragment.this.notifications.keySet().contains(newGroup) && newGroup.length() > 0) {
+                        if (!inNotifications(newGroup) && newGroup.length() > 0) {
+                            activity.addGroupToServer(newGroup);
                             activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)
                                     .edit()
                                     .putString("groupsInfo", activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
@@ -171,6 +176,17 @@ public class GroupFragment extends Fragment{
             }
         })
                 .show();
+    }
+
+    //Check if in notification
+    public boolean inNotifications(String group){
+        for (String groupSet : GroupFragment.this.notifications){
+            String[] grouped = groupSet.split("\\$");
+            if (group.equals(grouped[0])){
+                return true;
+            }
+        }
+        return false;
     }
 
     //Get Groups from the server
@@ -265,8 +281,7 @@ public class GroupFragment extends Fragment{
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                         //do something on click
                         activity.getGroupNames();
-                        activity.removeGroupFromServer(activity.groupNames.get(arg2));
-                        refreshListView();
+                        removeGroupFromServer(activity.groupNames.get(arg2));
                         dialog.dismiss();
                     }
                 });
@@ -276,5 +291,79 @@ public class GroupFragment extends Fragment{
                 break;
         }
         return true;
+    }
+
+    //Remove a group from local
+    public void removeGroup(String removeGroup) {
+        StringBuilder newGroupsInfo = new StringBuilder();
+        String raw = activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
+        if (!raw.equals("")){
+            for (String groupSet:raw.split("#,")){
+                String[] parts = groupSet.split("\\$");
+                if (!parts[0].equals(removeGroup)){
+                    newGroupsInfo.append(parts[0]);
+                    newGroupsInfo.append("$");
+                    newGroupsInfo.append(parts[1]);
+                    newGroupsInfo.append("#,");}
+            }
+            activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)
+                    .edit()
+                    .putString("groupsInfo",newGroupsInfo.toString())
+                    .commit();
+
+            activity.groupNames.remove(removeGroup);
+        }
+    }
+
+    //Remove Group from Server
+    public void removeGroupFromServer(final String group) {
+        new AsyncTask<Void, Void, String>() {
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse response;
+
+
+            @Override
+            protected void onPreExecute() {
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+
+            protected String doInBackground(Void... voids) {
+                try {
+                    String website = "http://olumni-server.herokuapp.com/" + activity.fullName + "/delGroup";
+                    HttpPost createSessions = new HttpPost(website);
+
+                    JSONObject json = new JSONObject();
+                    json.put("group",group);
+
+                    StringEntity se = new StringEntity(json.toString());
+                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                    createSessions.setEntity(se);
+
+                    response = client.execute(createSessions);
+                }
+                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
+                String result = "";
+                try{
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder();
+
+                    String line;
+                    String nl = System.getProperty("line.separator");
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line + nl);
+                    }
+                    result = sb.toString();
+                    //Log.i("RESULT PRINT FROM THING", result);
+                }catch (Exception e){e.printStackTrace();}
+
+                return result;
+            }
+
+            protected void onPostExecute(String result){
+                removeGroup(group);
+                refreshListView();
+            }
+
+        }.execute();
     }
 }

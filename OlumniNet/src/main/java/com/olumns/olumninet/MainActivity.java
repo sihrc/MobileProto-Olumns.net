@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
                 if (groupsExist() && fullNameExists())
                 updateLocalDatabase();
             }
-        },0,5000);
+        },0,100000);
     }
 
     //Olin Network Credentials Authentication
@@ -176,6 +176,7 @@ public class MainActivity extends Activity {
             String[] parts = setGroup.split("\\$");
             groupNames.add(parts[0]);
         }
+        Log.i("GroupsINFO2", groupNames.toString());
     }
 
     //Do this on first run
@@ -269,79 +270,6 @@ public class MainActivity extends Activity {
 
                 return result;
             }
-        }.execute();
-    }
-
-    //Remove a group from local
-    public void removeGroup(String removeGroup) {
-        StringBuilder newGroupsInfo = new StringBuilder();
-        String raw = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "");
-        if (!raw.equals("")){
-            for (String groupSet:raw.split("#,")){
-                String[] parts = groupSet.split("\\$");
-                if (!parts[0].equals(removeGroup)){
-                    newGroupsInfo.append(parts[0]);
-                    newGroupsInfo.append("$");
-                    newGroupsInfo.append(parts[1]);
-                    newGroupsInfo.append("#,");}
-                }
-            getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                    .edit()
-                    .putString("groupsInfo",newGroupsInfo.toString())
-                    .commit();
-            HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
-            names.remove(removeGroup);
-            MainActivity.this.groupNames = new ArrayList<String>(names);
-        }
-    }
-
-    //Remove Group from Server
-    public void removeGroupFromServer(final String group) {
-        new AsyncTask<Void, Void, String>() {
-            HttpClient client = new DefaultHttpClient();
-            HttpResponse response;
-
-
-            @Override
-            protected void onPreExecute() {
-                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
-            }
-
-            protected String doInBackground(Void... voids) {
-                try {
-                    String website = "http://olumni-server.herokuapp.com/" + fullName + "/delGroup";
-                    HttpPost createSessions = new HttpPost(website);
-
-                    JSONObject json = new JSONObject();
-                    json.put("group",group);
-
-                    StringEntity se = new StringEntity(json.toString());
-                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
-                    createSessions.setEntity(se);
-
-                    response = client.execute(createSessions);
-                }
-                catch (Exception e) {e.printStackTrace(); Log.e("Server", "Cannot Establish Connection");}
-                String result = "";
-                try{
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), "UTF-8"),8);
-                    StringBuilder sb = new StringBuilder();
-
-                    String line;
-                    String nl = System.getProperty("line.separator");
-                    while ((line = reader.readLine())!= null){
-                        sb.append(line + nl);
-                    }
-                    result = sb.toString();
-                    //Log.i("RESULT PRINT FROM THING", result);
-                }catch (Exception e){e.printStackTrace();}
-
-                return result;
-            }
-
-            protected void onPostExecute(String result){
-                removeGroup(group);
-                }
 
         }.execute();
     }
