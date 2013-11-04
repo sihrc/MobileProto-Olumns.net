@@ -9,6 +9,6 @@
             android:id="@+id/action2"
             android:orderInCategory="100"
             android:showAsAction="always"
-            android:icon="@drawable/minus"
+            android:icon="@drawable/trash"
             android:title="Refresh"/>
 </menu>
