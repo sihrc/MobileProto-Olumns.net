@@ -136,6 +136,7 @@ public class MainActivity extends Activity {
                         sb.append(line);
                         sb.append(nl);
                     }
+                    Log.i ("STRING FROM SERVER", sb.toString());
                     result = sb.toString();}catch(Exception e){e.printStackTrace();}
 
                 //Convert Result to JSON
@@ -143,15 +144,15 @@ public class MainActivity extends Activity {
                 try{
                     auth = new JSONObject(result);
                     JSONObject userID = auth.getJSONObject("user");
-                    username = userID.getString("id");
+                    username = userID.getString("nickname");
+                    if (username.equals("")){
+                        username = userID.getString("name");
+                    }
                 }catch(Exception e){e.printStackTrace();}
                 return username;
             }
             protected void onPostExecute(String fullName){
                 MainActivity.this.fullName = fullName;
-                //WE NEED TO REMOVE THIS
-                MainActivity.this.fullName = "CHRISLEE";
-                //WE NEED TO REMOVE THIS
                 //Save FullName
                 getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                         .edit()
