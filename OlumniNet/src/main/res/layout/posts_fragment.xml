@@ -4,24 +4,27 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <RelativeLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/parent_post"
-            android:paddingBottom="8dp"
-    >
-
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/parent_post_subject"
                 android:text="Subject"
-                android:textSize="20dp"
+                android:textSize="25sp"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="8dp"
-        ></TextView>
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/parent_post_message"
+        android:text="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage"
+        android:textSize="14dp"
+        android:layout_toRightOf="@id/parent_post_subject"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="16dp"
+        />
 
         <TextView
                 android:layout_width="wrap_content"
@@ -29,32 +32,19 @@
                 android:id="@+id/parent_post_author"
                 android:text="Author"
                 android:textSize="20dp"
-                android:layout_below="@id/parent_post_subject"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="8dp"
-        ></TextView>
-
-        <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/parent_post_message"
-                android:text="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage"
-                android:textSize="14dp"
-                android:layout_toRightOf="@id/parent_post_subject"
-                android:layout_marginTop="12dp"
-                android:layout_marginLeft="16dp"
-                ></TextView>
+                android:layout_alignBottom = "@id/parent_post_message"
+                android:layout_below="@+id/parent_post_subject"
+                android:layout_alignRight="@+id/parent_post_subject" />
 
 
-    </RelativeLayout>
 
     <View
             android:id="@+id/divider"
             android:layout_height="2dp"
             android:layout_width="match_parent"
             android:background="#000000"
-            android:layout_below="@id/parent_post"
-    ></View>
+            android:layout_below="@id/parent_post_author"
+    />
 
     <ListView
             android:layout_width="match_parent"
@@ -62,7 +52,7 @@
             android:id="@+id/post_children"
             android:layout_marginLeft="20dp"
             android:layout_below="@id/divider"
-    ></ListView>
+    />
 
 
 </RelativeLayout>
