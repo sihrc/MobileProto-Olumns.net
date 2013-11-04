@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
         actionBar.addTab(profileTab);
 
         //Action Bar
-        actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.android_dark_blue)));
+        actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.our_black)));
 
         //OnFirstRun
         onFirstRun();
@@ -363,9 +363,12 @@ public class MainActivity extends Activity {
                     HttpPost createSessions = new HttpPost(website);
 
                     getGroupNames();
-                    String groupsString = makeStringFromArrayList(MainActivity.this.groupNames);
+                    ArrayList<String> groupNames1 = MainActivity.this.groupNames;
+                    groupNames1.add("Events");
+                    String groupsString = makeStringFromArrayList(groupNames1);
 
                     ArrayList<String> ids = MainActivity.this.db.getAllPostIds();
+
                     String postIDString = makeStringFromArrayList(ids);
 
                     JSONObject json = new JSONObject();
@@ -393,7 +396,7 @@ public class MainActivity extends Activity {
                     result = sb.toString();
                     //Log.i("RESULT FROM SERVER", result);
                 }catch (Exception e){e.printStackTrace();}
-
+                Log.i("update result",result);
                 return result;
             }
 
@@ -438,7 +441,7 @@ public class MainActivity extends Activity {
                                 String id = postObject.getString("_id");
                                 String viewers = viewerString.toString();
 
-                                Post post = new Post(userName, group, "", message, date, parent, resolved, viewers);
+                                Post post = new Post(userName, group, subject, message, date, parent, resolved, viewers);
                                 post.setId(id);
                                 post.setLastDate(lastDate);
                                 MainActivity.this.db.addPost(post);

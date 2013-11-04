@@ -75,7 +75,6 @@ public class ThreadFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.curGroup = this.activity.curGroup;
-        Log.i ("BITCH I YOUR GROUP", this.curGroup);
         View v = inflater.inflate(R.layout.threads_fragment,null);
         setHasOptionsMenu(true);
 
