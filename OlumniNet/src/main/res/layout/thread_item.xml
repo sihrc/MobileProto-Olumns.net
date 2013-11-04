@@ -2,6 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
+              android:paddingBottom="10dp"
               android:layout_height="wrap_content">
 
     <TextView
@@ -56,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:id="@+id/thread_message"
-        android:layout_alignLeft = "@id/thread_author"
+        android:layout_alignLeft = "@id/thread_message"
         android:text="Message Message Message Message Message Message"
         android:textColor = "#393939"
         android:textSize="15sp"

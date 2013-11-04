@@ -35,7 +35,6 @@ public class PostListAdapter extends ArrayAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.post_child, parent, false);
             holder = new PostHolder();
-
             holder.author = (TextView) convertView.findViewById(R.id.child_post_author);
             holder.message = (TextView) convertView.findViewById(R.id.child_post_message);
 

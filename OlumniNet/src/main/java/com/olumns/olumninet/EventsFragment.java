@@ -76,7 +76,7 @@ public class EventsFragment extends Fragment {
         db = new DBHandler(activity);
         db.open();
 
-        threads = db.getThreadsByGroup(curGroup); //IDS EXIST HERE
+        threads = db.getThreadsByGroup(curGroup);
         Log.i("Threads",threads.toString());
         // Set up the ArrayAdapter for the Thread List
         threadListAdapter = new ThreadListAdapter(activity, threads);
@@ -88,11 +88,7 @@ public class EventsFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Add Connection to invisible Tab
                 refreshListView();
-                /*for (Post group:ThreadFragment.this.threads){
-                    Log.i("POSTIDPOSTID",group.id);
-                }*/
                 activity.curPost = EventsFragment.this.threads.get(i);
-                //Log.i("POSTIDPOSTID222",activity.curPost.id);
                 PostFragment newFragment = new PostFragment();
                 FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
 
@@ -246,26 +242,6 @@ public class EventsFragment extends Fragment {
             case R.id.action1:
                 addThread();
                 break;
-            case R.id.action2:
-                break;
-//            case R.id.remove_group:
-//                final Dialog dialog = new Dialog(activity);
-//                dialog.setContentView(R.layout.delgroup_list);
-//                dialog.setTitle("Remove Group");
-//                ListView listView = (ListView) dialog.findViewById(R.id.list);
-//
-//                ArrayAdapter<String> ad = new ArrayAdapter<String>(activity, R.layout.delgroup_list_item, R.id.singleItem, activity.groupNames);
-//                listView.setAdapter(ad);
-//
-//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//                        //do something on click
-//                        activity.removeGroupFromServer(activity.groupNames.get(arg2));
-//                    }
-//                });
-//                dialog.show();
-//                return true;
             default:
                 break;
         }

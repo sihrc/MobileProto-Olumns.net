@@ -32,7 +32,7 @@ public class ThreadListAdapter extends ArrayAdapter {
     }
 
     private class PostHolder{
-        TextView subject, author, numPosts, timeUpdated;
+        TextView subject, author, numPosts, timeUpdated, message;
     }
 
     public View getView(int position, View convertView, ViewGroup parent){
@@ -46,6 +46,7 @@ public class ThreadListAdapter extends ArrayAdapter {
             holder.author = (TextView) convertView.findViewById(R.id.thread_author);
             holder.numPosts = (TextView) convertView.findViewById(R.id.thread_post_number);
             holder.timeUpdated = (TextView) convertView.findViewById(R.id.thread_date);
+            holder.message = (TextView) convertView.findViewById(R.id.thread_message);
 
             convertView.setTag(holder);
         } else holder = (PostHolder) convertView.getTag();
@@ -54,11 +55,11 @@ public class ThreadListAdapter extends ArrayAdapter {
         db.open();
         Post parentPost = db.getThreadInfo(this.parentPosts.get(position));
 
-        //For testing purposes
-//        Post parentPost = this.parentPosts.get(position);
 
         holder.subject.setText(parentPost.subject);
         holder.author.setText(parentPost.poster);
+        holder.message.setText(parentPost.message);
+
         if (Integer.parseInt(parentPost.numChild) == 1) {
             holder.numPosts.setText("1 Reply");
         } else {
@@ -75,7 +76,7 @@ public class ThreadListAdapter extends ArrayAdapter {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String date2 = sdf.format(new Date(date1));
 
-        holder.timeUpdated.setText("Updated: " + date2);
+        holder.timeUpdated.setText(date2);
 
         return convertView;
     }

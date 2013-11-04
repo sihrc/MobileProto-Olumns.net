@@ -80,7 +80,6 @@ public class PostFragment extends Fragment {
         setHasOptionsMenu(true);
 
         this.curPost = this.activity.curPost;
-        Log.i("POSTID111", this.curPost.id);
         ParentPostHolder holder = new ParentPostHolder();
 
         holder.subject = (TextView) v.findViewById(R.id.parent_post_subject);
@@ -158,8 +157,6 @@ public class PostFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action1:
                 addPost();
-                break;
-            case R.id.action2:
                 break;
             default:
                 break;

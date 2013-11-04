@@ -133,6 +133,7 @@ public class GroupFragment extends Fragment{
         //Single Course Input
         final AutoCompleteTextView groupList = new AutoCompleteTextView(activity);
         groupList.setThreshold(0);
+
         groupList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

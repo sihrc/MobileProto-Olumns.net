@@ -60,9 +60,9 @@ public class GroupListAdapter extends ArrayAdapter{
         Group group = this.groups.get(position);
 
         holder.groupName.setText(group.groupName);
-        holder.numNotification.setText(group.notification + " new threads");
+        holder.numNotification.setText(group.notification + " new thread(s)");
         holder.groupIcon.setBackgroundColor(Color.HSVToColor(new float[] {(float) colors.get(position),(float) .6,(float) .7}));
-        //holder.groupLetter.setText(group.groupName.charAt(0));
+        holder.groupLetter.setText(String.valueOf(group.groupName.charAt(0)).toUpperCase());
 
 //        holder.icon.setImageResource(group.id);
         return convertView;
