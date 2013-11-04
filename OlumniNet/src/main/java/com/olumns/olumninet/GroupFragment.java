@@ -152,11 +152,9 @@ public class GroupFragment extends Fragment{
                             Toast.makeText(activity, "Give the list a name!", Toast.LENGTH_LONG).show();
                         }
 
-                        //Add group to server
-                        activity.addGroupToServer(newGroup);
-
                         //Save to preference
                         if (!GroupFragment.this.notifications.keySet().contains(newGroup) && newGroup.length() > 0) {
+                            activity.addGroupToServer(newGroup);
                             activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)
                                     .edit()
                                     .putString("groupsInfo", activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
@@ -170,6 +168,28 @@ public class GroupFragment extends Fragment{
             }
         })
                 .show();
+    }
+
+    //Remove a group from local
+    public void removeGroup(String removeGroup) {
+        StringBuilder newGroupsInfo = new StringBuilder();
+        String raw = activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
+        if (!raw.equals("")){
+            for (String groupSet:raw.split("#,")){
+                String[] parts = groupSet.split("\\$");
+                if (!parts[0].equals(removeGroup)){
+                    newGroupsInfo.append(parts[0]);
+                    newGroupsInfo.append("$");
+                    newGroupsInfo.append(parts[1]);
+                    newGroupsInfo.append("#,");}
+            }
+            activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)
+                    .edit()
+                    .putString("groupsInfo",newGroupsInfo.toString())
+                    .commit();
+
+            activity.groupNames.remove(removeGroup);
+        }
     }
 
     //Get Groups from the server
@@ -252,11 +272,11 @@ public class GroupFragment extends Fragment{
                 final Dialog dialog = new Dialog(activity);
                 dialog.setContentView(R.layout.delgroup_list);
                 dialog.setTitle("Remove Group");
-                ListView listView = (ListView) dialog.findViewById(R.id.list);
+                final ListView listView = (ListView) dialog.findViewById(R.id.list);
 
                 activity.getGroupNames();
 
-                ArrayAdapter<String> ad = new ArrayAdapter<String>(activity, R.layout.delgroup_list_item, R.id.singleItem, activity.groupNames);
+                final ArrayAdapter<String> ad = new ArrayAdapter<String>(activity, R.layout.delgroup_list_item, R.id.singleItem, activity.groupNames);
                 listView.setAdapter(ad);
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -264,7 +284,8 @@ public class GroupFragment extends Fragment{
                     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
                         //do something on click
                         activity.getGroupNames();
-                        activity.removeGroupFromServer(activity.groupNames.get(arg2));
+                        activity.removeGroupFromServer(ad.getItem(arg2));
+                        removeGroup(ad.getItem(arg2));
                         refreshListView();
                         dialog.dismiss();
                     }

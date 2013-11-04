@@ -266,29 +266,6 @@ public class MainActivity extends Activity {
         }.execute();
     }
 
-    //Remove a group from local
-    public void removeGroup(String removeGroup) {
-        StringBuilder newGroupsInfo = new StringBuilder();
-        String raw = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "");
-        if (!raw.equals("")){
-            for (String groupSet:raw.split("#,")){
-                String[] parts = groupSet.split("\\$");
-                if (!parts[0].equals(removeGroup)){
-                    newGroupsInfo.append(parts[0]);
-                    newGroupsInfo.append("$");
-                    newGroupsInfo.append(parts[1]);
-                    newGroupsInfo.append("#,");}
-                }
-            getSharedPreferences("PREFERENCE", MODE_PRIVATE)
-                    .edit()
-                    .putString("groupsInfo",newGroupsInfo.toString())
-                    .commit();
-            HashSet<String> names = new HashSet<String>(MainActivity.this.groupNames);
-            names.remove(removeGroup);
-            MainActivity.this.groupNames = new ArrayList<String>(names);
-        }
-    }
-
     //Remove Group from Server
     public void removeGroupFromServer(final String group) {
         new AsyncTask<Void, Void, String>() {
@@ -334,7 +311,6 @@ public class MainActivity extends Activity {
             }
 
             protected void onPostExecute(String result){
-                removeGroup(group);
                 }
 
         }.execute();
