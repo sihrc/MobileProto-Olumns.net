@@ -101,9 +101,8 @@ public class GroupFragment extends Fragment{
         db.open();
         getLocalNotificationsHash();
         this.groups = new ArrayList<Group>();
-        for (String group :this.notifications.keySet())
-            this.groups.add(new Group(group,db.getPostIdByGroup(group).size() - this.notifications.get(group)));
-
+        for (String group :this.notifications.keySet()){
+            this.groups.add(new Group(group,db.getPostIdByGroup(group).size() - this.notifications.get(group)));}
     }
 
     //Update the notifications
@@ -113,7 +112,6 @@ public class GroupFragment extends Fragment{
         if (!raw.equals("")){
             this.notifications.clear();
             //HashMap<String, Integer> newNotifications = new HashMap<String, Integer>();
-            Log.i ("GROUP-RAW",raw); //EDIT HERE
             for (String setGroup : raw.split("#,")){
                 String[] parts = setGroup.split("\\$");
                 this.notifications.put(parts[0],Integer.parseInt(parts[1]));
@@ -161,9 +159,8 @@ public class GroupFragment extends Fragment{
                             Toast.makeText(activity, "Give the list a name!", Toast.LENGTH_LONG).show();
                         }
 
-                        //Add course to server, if it doesn't exist on the server
-                        if (!databaseGroups.contains(newGroup))
-                            activity.addGroupToServer(newGroup);
+                        //Add group to server
+                        activity.addGroupToServer(newGroup);
 
                         //Save to preference
                         if (!GroupFragment.this.notifications.keySet().contains(newGroup) && newGroup.length() > 0) {
@@ -171,7 +168,6 @@ public class GroupFragment extends Fragment{
                                     .edit()
                                     .putString("groupsInfo", activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "") + newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,")
                                     .commit();
-                            Log.i("LET'S SEE WHAT'S COOKING", newGroup + "$" + db.getPostIdByGroup(newGroup).size() + "#,");
                         }
                         refreshListView();
                     }
@@ -229,7 +225,6 @@ public class GroupFragment extends Fragment{
                         jArray = jsonObj.getJSONArray("groups");
                     } catch(JSONException e) {
                         e.printStackTrace();
-                        Log.i("JSONPARSER", "ERROR PARSING JSON");
                     }
                     for (int i=0; i < jArray.length(); i++) {
                         try {
@@ -246,6 +241,7 @@ public class GroupFragment extends Fragment{
             }
         }.execute();
     }
+
     //Create Options Menu
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -276,7 +272,6 @@ public class GroupFragment extends Fragment{
                         //do something on click
                         activity.getGroupNames();
                         activity.removeGroupFromServer(activity.groupNames.get(arg2));
-                        activity.removeGroup(activity.groupNames.get(arg2));
                         refreshListView();
                         dialog.dismiss();
                     }

@@ -91,7 +91,7 @@ public class MainActivity extends Activity {
                 if (groupsExist() && fullNameExists())
                 updateLocalDatabase();
             }
-        },0,1000);
+        },0,5000);
     }
 
     //Olin Network Credentials Authentication
@@ -169,7 +169,6 @@ public class MainActivity extends Activity {
         for (String setGroup : setGroups){
             String[] parts = setGroup.split("\\$");
             groupNames.add(parts[0]);
-            Log.i("Groups", parts[0]);
         }
     }
 
@@ -182,7 +181,6 @@ public class MainActivity extends Activity {
     public boolean fullNameExists(){
         this.fullName = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("fullName","");
         this.username = getSharedPreferences("PREFERENCE",MODE_PRIVATE).getString("username","username");
-        Log.i ("FULLNAME RIGHT NOW IS", fullName);
         return !this.fullName.equals("");
     }
 
@@ -236,14 +234,13 @@ public class MainActivity extends Activity {
 
             protected String doInBackground(Void... voids) {
                 try {
-                    String website = "http://olumni-server.heroku.com/" + fullName + "/group";
+                    String website = "http://olumni-server.herokuapp.com/" + fullName + "/group";
                     HttpPost createSessions = new HttpPost(website);
 
                     JSONObject json = new JSONObject();
                     json.put("group",group);
 
                     StringEntity se = new StringEntity(json.toString());
-                    Log.i("JSON ENTITY",se.toString());
                     se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
                     createSessions.setEntity(se);
 
@@ -261,7 +258,7 @@ public class MainActivity extends Activity {
                         sb.append(line + nl);
                     }
                     result = sb.toString();
-                    Log.i("RESULT PRINT FROM THING", result);
+                    //Log.i("RESULT PRINT FROM THING", result);
                 }catch (Exception e){e.printStackTrace();}
 
                 return result;
@@ -273,7 +270,6 @@ public class MainActivity extends Activity {
     public void removeGroup(String removeGroup) {
         StringBuilder newGroupsInfo = new StringBuilder();
         String raw = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getString("groupsInfo", "");
-        Log.i ("RAW IN REMOVE", raw);
         if (!raw.equals("")){
             for (String groupSet:raw.split("#,")){
                 String[] parts = groupSet.split("\\$");
@@ -283,7 +279,6 @@ public class MainActivity extends Activity {
                     newGroupsInfo.append(parts[1]);
                     newGroupsInfo.append("#,");}
                 }
-            Log.i ("RAW IN REMOVE2", newGroupsInfo.toString());
             getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                     .edit()
                     .putString("groupsInfo",newGroupsInfo.toString())
@@ -315,7 +310,6 @@ public class MainActivity extends Activity {
                     json.put("group",group);
 
                     StringEntity se = new StringEntity(json.toString());
-                    Log.i("JSON ENTITY",se.toString());
                     se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
                     createSessions.setEntity(se);
 
@@ -333,7 +327,7 @@ public class MainActivity extends Activity {
                         sb.append(line + nl);
                     }
                     result = sb.toString();
-                    Log.i("RESULT PRINT FROM THING", result);
+                    //Log.i("RESULT PRINT FROM THING", result);
                 }catch (Exception e){e.printStackTrace();}
 
                 return result;
@@ -373,7 +367,7 @@ public class MainActivity extends Activity {
 
                     ArrayList<String> ids = MainActivity.this.db.getAllPostIds();
                     String postIDString = makeStringFromArrayList(ids);
-                    Log.i("SYNC ID",postIDString);
+
                     JSONObject json = new JSONObject();
                     json.put("postIDs", postIDString);
                     json.put("groups",groupsString);
@@ -397,7 +391,7 @@ public class MainActivity extends Activity {
                         sb.append(line + nl);
                     }
                     result = sb.toString();
-                    Log.i("RESULT FROM SERVER", result);
+                    //Log.i("RESULT FROM SERVER", result);
                 }catch (Exception e){e.printStackTrace();}
 
                 return result;
@@ -407,7 +401,6 @@ public class MainActivity extends Activity {
                 if (result != null && !result.isEmpty()) {
                     if (!result.equals("")){
                         JSONArray jArray = new JSONArray();
-                        // ArrayList tweets = new ArrayList();
                         JSONObject jsonObj = null;
                         try{
                             jsonObj = new JSONObject(result);
@@ -441,7 +434,7 @@ public class MainActivity extends Activity {
                                 String message = postObject.getString("message");
                                 String resolved = postObject.getString("resolved");
                                 String reply = postObject.getString("reply");
-                                //String subject = postObject.getString("subject");
+                                String subject = postObject.getString("subject");
                                 String id = postObject.getString("_id");
                                 String viewers = viewerString.toString();
 

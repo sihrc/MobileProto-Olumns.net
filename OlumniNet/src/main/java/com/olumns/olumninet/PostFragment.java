@@ -104,6 +104,7 @@ public class PostFragment extends Fragment {
         return v;
     }
 
+    //Refresh List
     public void refreshListView(){
         this.curPost = activity.curPost;
         Log.i("POSTID222", this.curPost.id);
@@ -114,6 +115,7 @@ public class PostFragment extends Fragment {
         this.postListAdapter.notifyDataSetChanged();
     }
 
+    //Add Post
     public void addPost() {
         //Inflate Dialog View
         final View view = activity.getLayoutInflater().inflate(R.layout.post_create,null);

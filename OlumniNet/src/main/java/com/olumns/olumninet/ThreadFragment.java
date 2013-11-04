@@ -75,6 +75,7 @@ public class ThreadFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.curGroup = this.activity.curGroup;
+        Log.i ("BITCH I YOUR GROUP", this.curGroup);
         View v = inflater.inflate(R.layout.threads_fragment,null);
         setHasOptionsMenu(true);
 
@@ -116,17 +117,19 @@ public class ThreadFragment extends Fragment {
     //Refresh Group List View
     public void refreshListView(){
         this.threads = db.getThreadsByGroup(curGroup);
+        updateNotificationsForGroup(curGroup);
         Log.i("Threads",threads.toString());
         this.threadListAdapter = new ThreadListAdapter(activity, threads);
         this.threadList.setAdapter(this.threadListAdapter);
         this.threadListAdapter.notifyDataSetChanged();
     }
 
+    //Add Thread
     public void addThread() {
         //Inflate Dialog View
         final View view = activity.getLayoutInflater().inflate(R.layout.thread_create,null);
 
-        //Create Dialog Box
+        //Create Dialog BoxcurGroup
         new AlertDialog.Builder(activity)
                 .setView(view)
                 .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
@@ -150,7 +153,6 @@ public class ThreadFragment extends Fragment {
 
 
                         //Add post to server
-                        updateNotificationsForGroup(curGroup);
                         addThreadToServer(newPost);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -279,6 +281,7 @@ public class ThreadFragment extends Fragment {
         return true;
     }
 
+    //UpdateNotificationsForGroup
     public void updateNotificationsForGroup(String group){
         String raw = activity.getSharedPreferences("PREFERENCE",activity.MODE_PRIVATE).getString("groupsInfo","");
         StringBuilder sb = new StringBuilder();
@@ -286,12 +289,15 @@ public class ThreadFragment extends Fragment {
         if (!raw.equals("")){
             for (String setGroup : raw.split("#,")){
                 String[] parts = setGroup.split("\\$");
+                Log.i("BITCH UPDATE GROUP", parts[0]);
                 sb.append(parts[0]);
                 sb.append("$");
-                if (group.equals(parts[0]))
-                    sb.append(String.valueOf(db.getThreadsByGroup(group).size()));
-                else
-                    sb.append(parts[1]);
+                if (group.equals(parts[0])){
+                    Log.i("BITCH UPDATE GROUP#", String.valueOf(db.getThreadsByGroup(group).size()));
+                    sb.append(String.valueOf(db.getThreadsByGroup(group).size()));}
+                else{
+                    Log.i("BITCH UPDATE GROUP#2", parts[1]);
+                    sb.append(parts[1]);}
                 sb.append("#,");
             }
             activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)

@@ -131,9 +131,6 @@ public class DBHandler {
             cursor.moveToNext();
         }
         cursor.close();
-        if (ids.size() < 1){
-            ids.add("1111");
-        }
         Log.i("IDS FROM GROUP", ids.toString());
         return ids;
     }
