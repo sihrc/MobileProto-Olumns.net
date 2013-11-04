@@ -4,40 +4,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     tools:context=".MainActivity">
 
-    <!--<ImageView-->
-        <!--android:id = "@+id/groupIcon"-->
-        <!--android:layout_height = "fill_parent"-->
-        <!--android:layout_width  = "wrap_content"-->
-        <!--android:layout_alignParentLeft = "true"-->
-        <!--android:layout_marginRight = "@dimen/iconBuffer"-->
-        <!--/>-->
-
+    <View
+        android:id = "@+id/groupIcon"
+        android:layout_height = "70dp"
+        android:layout_width  = "70dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentLeft = "true"
+        android:layout_marginRight = "@dimen/iconBuffer"
+        android:background="#000000"
+        />
+    <TextView
+        android:id = "@+id/groupLetter"
+        android:layout_height = "@dimen/groupItemHeight"
+        android:layout_width  = "@dimen/groupItemHeight"
+        android:layout_alignParentLeft = "true"
+        android:layout_marginRight = "@dimen/iconBuffer"
+        android:textSize = "60sp"
+        android:gravity = "center"
+        android:text = "H"
+        android:textColor="#FFFFFF"
+        />
     <TextView
         android:id = "@+id/groupName"
         android:layout_height = "wrap_content"
         android:layout_width = "wrap_content"
         android:layout_alignParentTop = "true"
-        android:textSize = "20sp"
+        android:layout_marginTop = "10dp"
+        android:textSize = "25sp"
+        android:text = "Really Long Title"
+        android:layout_toRightOf = "@id/groupIcon"
         />
 
-    <TextView
+        <TextView
         android:id = "@+id/groupNotification"
+        android:layout_toRightOf = "@id/groupIcon"
         android:layout_height = "wrap_content"
         android:layout_width = "wrap_content"
         android:layout_below = "@id/groupName"
-        android:textSize="16sp"
-        android:layout_marginLeft="16dp"
+        android:text = "2 new threads"
+        android:textSize="20sp"
+        android:textColor = "#898989"
         />
 
-    <TextView
-        android:id = "@+id/groupUpdate"
+<!--    <TextView
+        android:id = "@+id/groupNotification"
+        android:layout_toRightOf = "@id/groupIcon"
         android:layout_height = "wrap_content"
         android:layout_width = "wrap_content"
-        android:layout_alignParentBottom = "true"
-        android:layout_alignParentRight = "true"/>
+        android:layout_below = "@id/groupName"
+        android:text = "Lots of words lots of words lots of words lots of words lots of words lots of words lost of words"
+        android:textSize="16sp"
+        android:textColor = "#898989"
+        />-->
 
 </RelativeLayout>

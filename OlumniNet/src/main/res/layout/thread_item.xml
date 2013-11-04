@@ -2,57 +2,67 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="72dp">
+              android:layout_height="wrap_content">
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/thread_subject"
             android:text="Thread Subject"
-            android:textSize="20dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp"
+            android:textSize="20sp"
+            android:textStyle = "bold"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:fontFamily="sans-serif-light"
-            ></TextView>
+            />
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/thread_author"
             android:text="Author"
-            android:textSize="20dp"
+            android:textSize="15sp"
+            android:layout_alignLeft = "@id/thread_subject"
             android:layout_below="@id/thread_subject"
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="8dp"
             android:fontFamily="sans-serif-light"
-            ></TextView>
+            />
 
     <TextView
+            android:layout_margin = "10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/thread_post_number"
-            android:text="# of Posts"
-            android:textSize="20dp"
+            android:text="# of replies"
+            android:textSize="18sp"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginBottom="4dp"
             android:fontFamily="sans-serif-light"
-            ></TextView>
+            />
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/thread_date"
             android:text="Date of Last Post"
-            android:textSize="20dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="8dp"
-            android:layout_below="@id/thread_post_number"
+            android:textSize="15sp"
+            android:textStyle = "bold"
             android:fontFamily="sans-serif-light"
-            ></TextView>
+            android:layout_below="@+id/thread_subject"
+            android:layout_marginRight = "10dp"
+            android:layout_alignParentRight="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:id="@+id/thread_message"
+        android:layout_alignLeft = "@id/thread_author"
+        android:text="Message Message Message Message Message Message"
+        android:textColor = "#393939"
+        android:textSize="15sp"
+        android:layout_below="@id/thread_author"
+        android:fontFamily="sans-serif-light"
+        />
 
 
 </RelativeLayout>

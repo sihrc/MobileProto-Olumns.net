@@ -2,6 +2,8 @@ package com.olumns.olumninet;
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.teamolumn.olumninet.R;
 
@@ -20,17 +24,22 @@ import com.teamolumn.olumninet.R;
 public class GroupListAdapter extends ArrayAdapter{
     Context context;
     List<Group> groups;
+    ArrayList<Integer> colors = new ArrayList<Integer>();
+
 
     public GroupListAdapter(Context context, List<Group> groups){
         super(context, R.layout.group_item, groups);
         this.context = context;
         this.groups = groups;
+        Random rand = new Random();
+        for (int i = 0; i < groups.size(); i++) {
+            colors.add(rand.nextInt(360));
+        }
     }
 
     private class GroupHolder{
-        TextView groupName, timeUpdated, numNotification;
-        ImageView icon;
-
+        TextView groupName, numNotification, groupLetter;
+        View groupIcon;
     }
 
     public View getView(int position, View convertView, ViewGroup parent){
@@ -40,10 +49,10 @@ public class GroupListAdapter extends ArrayAdapter{
             convertView = inflater.inflate(R.layout.group_item, parent, false);
             holder = new GroupHolder();
 
-//            holder.icon = (ImageView) convertView.findViewById(R.id.groupIcon);
             holder.groupName = (TextView) convertView.findViewById(R.id.groupName);
-            holder.timeUpdated = (TextView) convertView.findViewById(R.id.groupUpdate);
             holder.numNotification = (TextView) convertView.findViewById(R.id.groupNotification);
+            holder.groupIcon = convertView.findViewById(R.id.groupIcon);
+            holder.groupLetter = (TextView) convertView.findViewById(R.id.groupLetter);
 
             convertView.setTag(holder);
         } else holder = (GroupHolder) convertView.getTag();
@@ -52,6 +61,8 @@ public class GroupListAdapter extends ArrayAdapter{
 
         holder.groupName.setText(group.groupName);
         holder.numNotification.setText(group.notification + " new threads");
+        holder.groupIcon.setBackgroundColor(Color.HSVToColor(new float[] {(float) colors.get(position),(float) .6,(float) .7}));
+        //holder.groupLetter.setText(group.groupName.charAt(0));
 
 //        holder.icon.setImageResource(group.id);
         return convertView;
