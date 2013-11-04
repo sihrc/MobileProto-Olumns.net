@@ -17,8 +17,9 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="90dp"
+        android:layout_height="60dp"
         android:id="@+id/parent_post_message"
+        android:maxLength = "95"
         android:text="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage"
         android:textSize="14dp"
         android:layout_toRightOf="@id/parent_post_subject"
