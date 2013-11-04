@@ -8,7 +8,7 @@
     <ListView
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:divider = "#000000"
+        android:divider = "#252525"
         android:dividerHeight="1dp"
         android:id="@+id/thread_list"
         />
