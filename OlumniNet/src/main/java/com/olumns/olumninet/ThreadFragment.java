@@ -254,26 +254,6 @@ public class ThreadFragment extends Fragment {
             case R.id.action1:
                 addThread();
                 break;
-            case R.id.action2:
-                break;
-//            case R.id.remove_group:
-//                final Dialog dialog = new Dialog(activity);
-//                dialog.setContentView(R.layout.delgroup_list);
-//                dialog.setTitle("Remove Group");
-//                ListView listView = (ListView) dialog.findViewById(R.id.list);
-//
-//                ArrayAdapter<String> ad = new ArrayAdapter<String>(activity, R.layout.delgroup_list_item, R.id.singleItem, activity.groupNames);
-//                listView.setAdapter(ad);
-//
-//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-//                        //do something on click
-//                        activity.removeGroupFromServer(activity.groupNames.get(arg2));
-//                    }
-//                });
-//                dialog.show();
-//                return true;
             default:
                 break;
         }

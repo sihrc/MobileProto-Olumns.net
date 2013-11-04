@@ -159,8 +159,6 @@ public class PostFragment extends Fragment {
             case R.id.action1:
                 addPost();
                 break;
-            case R.id.action2:
-                break;
             default:
                 break;
         }
