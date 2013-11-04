@@ -59,12 +59,10 @@ public class MyPostsFragment extends Fragment{
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Add Connection to invisible Tab
                 refreshListView();
-                /*for (Post group:ThreadFragment.this.threads){
-                    Log.i("POSTIDPOSTID",group.id);
-                }*/
-                activity.curPost = MyPostsFragment.this.myposts.get(i);
+
+                activity.curPost = db.getPostById(MyPostsFragment.this.myposts.get(i).parent);
                 activity.curGroup = activity.curPost.groups;
-                //Log.i("POSTIDPOSTID222",activity.curPost.id);
+
                 PostFragment newFragment = new PostFragment();
                 FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
 

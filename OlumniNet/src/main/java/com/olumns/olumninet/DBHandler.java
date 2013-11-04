@@ -38,15 +38,14 @@ public class DBHandler {
         database = model.getWritableDatabase();
     }
 
+    public Post getPostById(String id){
+        return sweepCursor(database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_ID+ " like '%" + id + "%'", null, null, null, DatabaseModel.POST_DATE  + " DESC")).get(0);
+    }
+
     public void close(){
         database.close();
     }
 
-    //Update a post
-    public void updatePost(Post post){
-        deletePostById(post.id);
-        addPost(post);
-    }
 
     public ArrayList<String> getAllPostIds(){
         Cursor cursor = database.query(DatabaseModel.TABLE_NAME, new String[]{DatabaseModel.POST_ID}, null, null, null, null, DatabaseModel.POST_DATE);

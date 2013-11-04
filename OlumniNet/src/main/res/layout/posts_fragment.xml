@@ -5,37 +5,38 @@
               android:layout_height="match_parent">
 
         <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/parent_post_subject"
-                android:text="Subject"
+                android:text="SubjectSubjectSubjectSubjectSubjectSubjectSubjectSubjectSubjectSubject"
                 android:textSize="25sp"
+                android:maxLength = "30"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="8dp"
         />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/parent_post_author"
+        android:text="Author"
+        android:textSize="20dp"
+        android:layout_below="@+id/parent_post_subject"
+        android:layout_alignLeft="@+id/parent_post_subject" />
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:id="@+id/parent_post_message"
-        android:maxLength = "95"
+        android:maxLength = "70"
         android:text="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage"
         android:textSize="14dp"
-        android:layout_toRightOf="@id/parent_post_subject"
-        android:layout_marginTop="12dp"
+        android:layout_marginRight = "10dp"
+        android:layout_toRightOf="@id/parent_post_author"
+        android:layout_alignTop = "@id/parent_post_author"
         android:layout_marginLeft="16dp"
         />
 
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/parent_post_author"
-                android:text="Author"
-                android:textSize="20dp"
-                android:layout_alignBottom = "@id/parent_post_message"
-                android:layout_below="@+id/parent_post_subject"
-                android:layout_alignRight="@+id/parent_post_subject" />
+
 
 
 
@@ -44,7 +45,7 @@
             android:layout_height="2dp"
             android:layout_width="match_parent"
             android:background="#000000"
-            android:layout_below="@id/parent_post_author"
+            android:layout_below="@id/parent_post_message"
     />
 
     <ListView
