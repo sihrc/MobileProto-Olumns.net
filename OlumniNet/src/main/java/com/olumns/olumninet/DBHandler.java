@@ -97,13 +97,13 @@ public class DBHandler {
     //Getting Threads by Group
     public ArrayList<Post> getThreadsByGroup(String group){
         return sweepCursor(
-        database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_PARENT+ " like '%" + group + "%'", null, null, null, DatabaseModel.POST_DATE));
+        database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_PARENT+ " like '%" + group + "%'", null, null, null, DatabaseModel.POST_DATE  + " DESC"));
     }
 
     //Getting Posts by Thread
     public ArrayList<Post> getPostsByThread(String thread){
         return sweepCursor(
-                database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_PARENT + " like '%" + thread + "%'", null, null, null, DatabaseModel.POST_DATE));
+                database.query(DatabaseModel.TABLE_NAME, allColumns, DatabaseModel.POST_PARENT + " like '%" + thread + "%'", null, null, null, DatabaseModel.POST_DATE + " DESC"));
     }
 
     //Get Information on the Children from Parent Thread

@@ -1,6 +1,7 @@
 package com.olumns.olumninet;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,14 +65,17 @@ public class ThreadListAdapter extends ArrayAdapter {
             holder.numPosts.setText(parentPost.numChild + " Posts");
         }
         Date date = new Date();
-        try{
-        String pattern = "dd-MMM-yyyy HH:mm:ss.SSS";
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        date = sdf.parse(parentPost.lastDate);
+        long date1 = Long.parseLong(parentPost.lastDate);
+        String pattern = "MMM d";
+        if (DateUtils.isToday(date1)) {
+            pattern = "h:mm a";
+        } else {
+            pattern = "MMM d";
         }
-        catch(ParseException e){e.printStackTrace();}
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        String date2 = sdf.format(new Date(date1));
 
-        holder.timeUpdated.setText("Updated: " + date.toString());
+        holder.timeUpdated.setText("Updated: " + date2);
 
         return convertView;
     }
