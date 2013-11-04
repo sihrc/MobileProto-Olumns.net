@@ -178,6 +178,7 @@ public class GroupFragment extends Fragment{
                 .show();
     }
 
+
     //Check if in notification
     public boolean inNotifications(String group){
         for (String groupSet : GroupFragment.this.notifications){
@@ -188,6 +189,7 @@ public class GroupFragment extends Fragment{
         }
         return false;
     }
+
 
     //Get Groups from the server
     public void addGroupFromServer(){
@@ -269,11 +271,11 @@ public class GroupFragment extends Fragment{
                 final Dialog dialog = new Dialog(activity);
                 dialog.setContentView(R.layout.delgroup_list);
                 dialog.setTitle("Remove Group");
-                ListView listView = (ListView) dialog.findViewById(R.id.list);
+                final ListView listView = (ListView) dialog.findViewById(R.id.list);
 
                 activity.getGroupNames();
 
-                ArrayAdapter<String> ad = new ArrayAdapter<String>(activity, R.layout.delgroup_list_item, R.id.singleItem, activity.groupNames);
+                final ArrayAdapter<String> ad = new ArrayAdapter<String>(activity, R.layout.delgroup_list_item, R.id.singleItem, activity.groupNames);
                 listView.setAdapter(ad);
 
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

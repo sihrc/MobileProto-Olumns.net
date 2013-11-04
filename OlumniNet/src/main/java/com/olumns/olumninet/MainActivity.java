@@ -176,7 +176,6 @@ public class MainActivity extends Activity {
             String[] parts = setGroup.split("\\$");
             groupNames.add(parts[0]);
         }
-        Log.i("GroupsINFO2", groupNames.toString());
     }
 
     //Do this on first run
@@ -270,7 +269,6 @@ public class MainActivity extends Activity {
 
                 return result;
             }
-
         }.execute();
     }
 
