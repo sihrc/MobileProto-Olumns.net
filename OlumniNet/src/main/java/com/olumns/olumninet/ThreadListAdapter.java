@@ -55,8 +55,6 @@ public class ThreadListAdapter extends ArrayAdapter {
         db.open();
         Post parentPost = db.getThreadInfo(this.parentPosts.get(position));
 
-        //For testing purposes
-//        Post parentPost = this.parentPosts.get(position);
 
         holder.subject.setText(parentPost.subject);
         holder.author.setText(parentPost.poster);

@@ -80,7 +80,6 @@ public class PostFragment extends Fragment {
         setHasOptionsMenu(true);
 
         this.curPost = this.activity.curPost;
-        Log.i("POSTID111", this.curPost.id);
         ParentPostHolder holder = new ParentPostHolder();
 
         holder.subject = (TextView) v.findViewById(R.id.parent_post_subject);

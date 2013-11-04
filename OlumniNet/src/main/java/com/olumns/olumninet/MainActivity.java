@@ -46,6 +46,9 @@ public class MainActivity extends Activity {
     public DBHandler db = new DBHandler(this);
 
     @Override
+    public void onBackPressed() {
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -153,6 +156,8 @@ public class MainActivity extends Activity {
             }
             protected void onPostExecute(String fullName){
                 MainActivity.this.fullName = fullName;
+                if (fullName.equals(""))
+                    MainActivity.this.fullName = "Anon";
                 //Save FullName
                 getSharedPreferences("PREFERENCE", MODE_PRIVATE)
                         .edit()
