@@ -60,9 +60,9 @@ public class ThreadListAdapter extends ArrayAdapter {
         holder.subject.setText(parentPost.subject);
         holder.author.setText(parentPost.poster);
         if (Integer.parseInt(parentPost.numChild) == 1) {
-            holder.numPosts.setText("1 Post");
+            holder.numPosts.setText("1 Reply");
         } else {
-            holder.numPosts.setText(parentPost.numChild + " Posts");
+            holder.numPosts.setText(parentPost.numChild + " Replies");
         }
         Date date = new Date();
         long date1 = Long.parseLong(parentPost.lastDate);
