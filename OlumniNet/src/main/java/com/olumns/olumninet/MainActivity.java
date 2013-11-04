@@ -76,7 +76,7 @@ public class MainActivity extends Activity {
         actionBar.addTab(profileTab);
 
         //Action Bar
-        actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.android_dark_blue)));
+        actionBar.setStackedBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.our_black)));
 
         //OnFirstRun
         onFirstRun();
