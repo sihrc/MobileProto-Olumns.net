@@ -4,6 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="iconBuffer">10dp</dimen>
+    <dimen name="groupItemHeight">80dp</dimen>
+
 
     <dimen name="signin_heading">25sp</dimen>
 </resources>

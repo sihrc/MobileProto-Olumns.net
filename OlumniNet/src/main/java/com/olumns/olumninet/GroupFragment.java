@@ -111,17 +111,10 @@ public class GroupFragment extends Fragment{
         String raw =  activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("groupsInfo", "");
         if (!raw.equals("")){
             this.notifications.clear();
-            //HashMap<String, Integer> newNotifications = new HashMap<String, Integer>();
             for (String setGroup : raw.split("#,")){
                 String[] parts = setGroup.split("\\$");
                 this.notifications.put(parts[0],Integer.parseInt(parts[1]));
-                /*if (!this.notifications.containsKey(parts[0])){
-                    newNotifications.put(parts[0], Integer.parseInt(parts[1]));
-                } else {
-                    newNotifications.put(parts[0],this.notifications.get(parts[0]));
-                }*/
             }
-            //this.notifications = newNotifications;
         }
     }
 
