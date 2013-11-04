@@ -107,7 +107,6 @@ public class EventsFragment extends Fragment {
 
         return v;
     }
-
     //Refresh Group List View
     public void refreshListView(){
         EventsFragment.this.threads = EventsFragment.this.db.getThreadsByGroup("Event");

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -69,7 +70,6 @@ public class GroupFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = new DBHandler(activity);
-        if (!activity.groupsExist()) addGroupFromServer();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class GroupFragment extends Fragment{
                              Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.groups_fragment,null);
-
+        onFirstRun();
         // Set up the ArrayAdapter for the Group List
         groupList = (ListView) v.findViewById(R.id.groupList);
         refreshListView();
@@ -367,5 +367,130 @@ public class GroupFragment extends Fragment{
             }
 
         }.execute();
+    }
+
+    //Do this on first run
+    public void onFirstRun(){
+        if (!groupsExist()) addGroupFromServer();
+        if (!fullNameExists()) userLogin();
+    }
+
+    //Dialog Log in
+    public void userLogin(){
+        //Inflate Dialog View
+        final View view = activity.getLayoutInflater().inflate(R.layout.signin_main,null);
+        //Prompt for username and password
+        new AlertDialog.Builder(activity)
+                .setView(view)
+                .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        EditText userInput = (EditText) view.findViewById(R.id.username);
+                        EditText passInput = (EditText) view.findViewById(R.id.password);
+                        userInput.setText(activity.username);
+                        activity.username = userInput.getText().toString();
+                        activity.password = passInput.getText().toString();
+                        //Save to preference
+                        activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)
+                                .edit()
+                                .putString("username", userInput.getText().toString())
+                                .commit();
+
+                        activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)
+                                .edit()
+                                .putString("password", passInput.getText().toString())
+                                .commit();
+                        authenticate();
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Do nothing.
+            }
+        }).show();
+        //Get User Login
+       activity.username = activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("username","");
+        activity.password = activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE).getString("password","");
+    }
+    //Get User Name
+    public boolean fullNameExists(){
+        activity.fullName = activity.getSharedPreferences("PREFERENCE",activity.MODE_PRIVATE).getString("fullName","");
+        activity.username = activity.getSharedPreferences("PREFERENCE",activity.MODE_PRIVATE).getString("username","username");
+        return !activity.fullName.equals("");
+    }
+
+    //Olin Network Credentials Authentication
+    public void authenticate(){
+        new AsyncTask<Void, Void, String>() {
+            HttpResponse response;
+            InputStream inputStream = null;
+            String result = "";
+            HttpClient client = new DefaultHttpClient();
+
+            @Override
+            protected void onPreExecute(){
+                HttpConnectionParams.setConnectionTimeout(client.getParams(), 10000);
+            }
+            protected String doInBackground(Void... voids) {
+                //Website URL and header configuration
+                String website = "https://olinapps.herokuapp.com/api/exchangelogin";
+                HttpPost get_auth = new HttpPost(website);
+                get_auth.setHeader("Content-type","application/json");
+
+                //Create and execute POST with JSON Post Package
+                JSONObject auth = new JSONObject();
+                try{
+                    auth.put("username", activity.username);
+                    Log.i ("USERNAME", activity.username);
+                    auth.put("password", activity.password);
+                    Log.i ("USERNAME", activity.password);
+                    StringEntity se = new StringEntity(auth.toString());
+                    se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,"application/json"));
+                    get_auth.setEntity(se);
+                }catch(Exception e){e.printStackTrace();}
+                try{response = client.execute(get_auth);}catch(Exception e){e.printStackTrace();}
+
+                //Read the response
+                HttpEntity entity = response.getEntity();
+
+                try{inputStream = entity.getContent();}catch(Exception e){e.printStackTrace();}
+                try{BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"),8);
+                    StringBuilder sb = new StringBuilder(); String line; String nl = System.getProperty("line.separator");
+
+                    while ((line = reader.readLine())!= null){
+                        sb.append(line);
+                        sb.append(nl);
+                    }
+                    Log.i ("STRING FROM SERVER", sb.toString());
+                    result = sb.toString();}catch(Exception e){e.printStackTrace();}
+
+                //Convert Result to JSON
+                String username = "";
+                try{
+                    auth = new JSONObject(result);
+                    JSONObject userID = auth.getJSONObject("user");
+                    username = userID.getString("nickname");
+                    if (username.equals("")){
+                        username = userID.getString("name");
+                    }
+                }catch(Exception e){e.printStackTrace();}
+                return username;
+            }
+            protected void onPostExecute(String fullName){
+                activity.fullName = fullName;
+                if (fullName.equals(""))
+                    activity.fullName = "ChrisLee";
+                //Save FullName
+                activity.getSharedPreferences("PREFERENCE", activity.MODE_PRIVATE)
+                        .edit()
+                        .putString("fullName", activity.fullName)
+                        .commit();
+                Toast.makeText(activity, "You have logged in as " + activity.fullName, Toast.LENGTH_LONG).show();
+            }
+        }.execute();
+    }
+
+    //Check if Groups Exist
+    public boolean groupsExist(){
+        String groups = activity.getSharedPreferences("PREFERENCE",activity.MODE_PRIVATE).getString("groupsInfo","");
+        return !groups.equals("");
     }
 }
