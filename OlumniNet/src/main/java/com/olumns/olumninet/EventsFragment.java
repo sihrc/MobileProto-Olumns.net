@@ -186,7 +186,7 @@ public class EventsFragment extends Fragment {
                     /*json.put("lastDate",post.lastDate);*/
                     json.put("message",post.message);
                     json.put("viewers", "public");
-                    json.put("reply", "false");
+                    json.put("reply", "true");
 
                     Log.i("group",post.groups);
                     Log.i("parentItem",post.parent);

@@ -189,6 +189,7 @@ public class PostFragment extends Fragment {
                     json.put("username",post.poster);
                     json.put("date",post.date);
                     /*json.put("lastDate",post.lastDate);*/
+                    json.put("subject","subject");
                     json.put("message",post.message);
                     json.put("viewers", "public");
                     json.put("reply", "false");
