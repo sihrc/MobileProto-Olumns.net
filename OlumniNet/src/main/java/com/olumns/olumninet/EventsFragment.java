@@ -1,11 +1,11 @@
 package com.olumns.olumninet;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,13 +14,15 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
 import com.teamolumn.olumninet.R;
 
@@ -37,8 +39,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by zach on 11/2/13.
@@ -70,7 +74,9 @@ public class EventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.threads_fragment,null);
+        setupUI(v);
         setHasOptionsMenu(true);
 
         db = new DBHandler(activity);
@@ -104,7 +110,7 @@ public class EventsFragment extends Fragment {
 
     //Refresh Group List View
     public void refreshListView(){
-        this.threads = db.getThreadsByGroup(curGroup);
+        EventsFragment.this.threads = EventsFragment.this.db.getThreadsByGroup("Event");
         Log.i("Threads",threads.toString());
         this.threadListAdapter = new ThreadListAdapter(activity, threads);
         this.threadList.setAdapter(this.threadListAdapter);
@@ -114,33 +120,85 @@ public class EventsFragment extends Fragment {
     //Add Thread
     public void addThread() {
         //Inflate Dialog View
-        final View view = activity.getLayoutInflater().inflate(R.layout.thread_create,null);
+        final View view = activity.getLayoutInflater().inflate(R.layout.add_events,null);
 
+        final EditText event = (EditText) view.findViewById(R.id.inputName);
+        final EditText location = (EditText) view.findViewById(R.id.inputLocation);
+        final EditText description = (EditText) view.findViewById(R.id.inputDescription);
+        final EditText date = (EditText) view.findViewById(R.id.inputDate);
+        final EditText time = (EditText) view.findViewById(R.id.inputStart);
+
+        date.setFocusable(false);
+        date.setClickable(true);
+
+        time.setFocusable(false);
+        time.setClickable(true);
+
+        date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar myCalendar = Calendar.getInstance();
+                new DatePickerDialog(activity,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i2, int i3) {
+                                myCalendar.set(Calendar.YEAR, i);
+                                myCalendar.set(Calendar.MONTH, i2);
+                                myCalendar.set(Calendar.DAY_OF_MONTH, i3);
+                                String myFormat = "MM/dd/yy";
+                                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+                                date.setText(sdf.format(myCalendar.getTime()));
+                            }
+                        },
+                        myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar start = Calendar.getInstance();
+                int hour = start.get(Calendar.HOUR_OF_DAY);
+                int minute = start.get(Calendar.MINUTE);
+                TimePickerDialog timePicker = new TimePickerDialog(activity,new TimePickerDialog.OnTimeSetListener(){
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute){
+                        String timea, AMPM;
+                        if (selectedHour >= 12){
+                            if (selectedHour%12 == 0) timea = "12";
+                            else timea = String.valueOf(selectedHour%12);
+                            AMPM = "PM";}
+                        else{
+                            if (selectedHour%12 == 0) timea = "12";
+                            else timea = String.valueOf(selectedHour%12);
+                            AMPM = "AM";}
+                        timea = timea + ":" + String.valueOf(selectedMinute) + AMPM;
+                        time.setText(timea);
+                    }},hour,minute,false);
+                timePicker.setTitle("Select Start Time");
+                timePicker.show();
+            }
+        });
         //Create Dialog BoxcurGroup
         new AlertDialog.Builder(activity)
                 .setView(view)
                 .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        EditText subjectInput = (EditText) view.findViewById(R.id.thread_subject);
-                        EditText messageInput = (EditText) view.findViewById(R.id.thread_message);
+                        String inputEvent = event.getText().toString();
+                        String inputLocation = location.getText().toString();
+                        String inputDescription = description.getText().toString();
+                        String inputDate = date.getText().toString();
+                        String inputTime = time.getText().toString();
 
-                        String subject = subjectInput.getText().toString();
-                        String message = messageInput.getText().toString();
-
-                        if (subject.length() < 1) {
-                            Toast.makeText(activity, "Give the post a subject!", Toast.LENGTH_LONG).show();
-                            dialog.dismiss();
-                        }
-                        if (message.length() < 1) {
-                            Toast.makeText(activity, "Give the post a message!", Toast.LENGTH_LONG).show();
-                            dialog.dismiss();
-                        }
-
-                        Post newPost = new Post(activity.fullName, curGroup, subject, message, String.valueOf(System.currentTimeMillis()), curGroup, "Unresolved", activity.curGroup + "&");
-
+                        Post newPost = new Post(activity.fullName, curGroup, inputEvent, inputLocation + ": " + inputDescription, String.valueOf(System.currentTimeMillis()), curGroup, "Unresolved", activity.curGroup + "&");
+                        newPost.setEventDate(inputDate);
+                        newPost.setEventTime(inputTime);
 
                         //Add post to server
                         addThreadToServer(newPost);
+                        threads.add(newPost);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
@@ -150,7 +208,24 @@ public class EventsFragment extends Fragment {
                 .show();
     }
 
-    //Create Options Menu
+    public void setupUI(View view) {
+        //Set up touch listener for non-text box views to hide keyboard.
+        if(!(view instanceof EditText)) {
+            view.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    hideKeyboard(activity);
+                    return false;
+                }
+            });
+        }
+    }
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
+
+        //Create Options Menu
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.thread_menu, menu);

@@ -140,11 +140,11 @@ public class GroupFragment extends Fragment{
         //Single Course Input
         final AutoCompleteTextView groupList = new AutoCompleteTextView(activity);
         groupList.setThreshold(0);
-
+        groupList.setDropDownVerticalOffset(-500);
         groupList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                groupList.showDropDown();
+                groupList.showDropDown();;
             }
         });
         groupList.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_dropdown_item_1line, databaseGroups));

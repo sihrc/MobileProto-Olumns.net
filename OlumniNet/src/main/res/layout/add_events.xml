@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+    
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parent">
+    
+    <TextView
+    android:id = "@+id/title"
+    android:fontFamily="sans-serif"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding = "10dp"
+    android:textSize = "@dimen/signin_heading"
+    android:scaleType="center"
+    android:gravity = "left"
+    android:textColor = "@android:color/white"
+    android:background="@android:color/holo_blue_light"
+    android:text = "Create an Event" />
+    
+    <EditText
+    android:layout_below= "@id/title"
+    android:fontFamily="sans-serif"
+    android:id = "@+id/inputName"
+    android:gravity="left"
+    android:layout_width = "fill_parent"
+    android:layout_height = "wrap_content"
+    android:textSize = "20sp"
+    android:hint = "Event"
+    />
+    
+    <EditText
+    android:layout_below= "@id/inputName"
+    android:id = "@+id/inputLocation"
+    android:layout_width = "fill_parent"
+    android:layout_height = "wrap_content"
+    android:textSize = "20sp"
+    android:gravity = "left"
+    android:hint = "Location"
+    android:clickable="true"
+    />
+
+    <EditText
+        android:layout_below= "@id/inputLocation"
+    android:textSize = "20sp"
+    android:inputType="textMultiLine"
+    android:lines = "3"
+    android:maxLines="4"
+    android:gravity="top|left"
+    android:id="@+id/inputDescription"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:layout_marginBottom="16dp"
+    android:fontFamily="sans-serif"
+    android:hint="Description"/>
+    
+    <EditText
+        android:layout_below= "@id/inputDescription"
+    android:id = "@+id/inputDate"
+    android:layout_width = "fill_parent"
+    android:layout_height = "wrap_content"
+    android:textSize = "20sp"
+    android:gravity = "left"
+    android:hint = "Date"
+    android:clickable="true"
+    />
+    
+    <EditText
+        android:layout_below= "@id/inputDate"
+    android:id = "@+id/inputStart"
+    android:layout_width = "fill_parent"
+    android:layout_height = "wrap_content"
+    android:textSize = "20sp"
+    android:hint = "Time"
+    android:gravity = "left"
+    />
+
+    
+    </RelativeLayout>

@@ -5,6 +5,8 @@ package com.olumns.olumninet;
  */
 public class Post {
     String poster, groups, subject, message, date, parent, status, id, numChild, lastDate, viewers;
+    String eventDate = "";
+    String eventTime = "";
     //Constructor
     public Post (String poster,String groups,String subject,String message, String date, String parent, String status, String viewers){
         this.poster = poster;
@@ -28,5 +30,13 @@ public class Post {
 
     public void setLastDate(String value){
         this.lastDate = value;
+    }
+
+    public void setEventDate(String value){
+       this.eventDate = value;
+    }
+
+    public void setEventTime(String value){
+        this.eventTime = value;
     }
 }

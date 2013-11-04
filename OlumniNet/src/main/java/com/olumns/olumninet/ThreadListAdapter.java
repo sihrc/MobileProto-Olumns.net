@@ -75,7 +75,9 @@ public class ThreadListAdapter extends ArrayAdapter {
         }
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         String date2 = sdf.format(new Date(date1));
-
+        if (!parentPost.eventDate.equals("")){
+            date2 = parentPost.eventDate + " " + parentPost.eventTime;
+        }
         holder.timeUpdated.setText(date2);
 
         return convertView;
